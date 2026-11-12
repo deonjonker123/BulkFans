@@ -1,16 +1,28 @@
 package com.misterd.encasedfans.processing;
 
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
 public enum FanProcessingType {
-    NONE,
-    WASHING,
-    SMOKING,
-    BLASTING,
-    HAUNTING;
+    NONE(ParticleTypes.CLOUD),
+    WASHING(ParticleTypes.SPLASH),
+    SMOKING(ParticleTypes.SMOKE),
+    BLASTING(ParticleTypes.SMALL_FLAME),
+    HAUNTING(ParticleTypes.SOUL_FIRE_FLAME);
+
+    private final ParticleOptions particle;
+
+    FanProcessingType(ParticleOptions particle) {
+        this.particle = particle;
+    }
+
+    public ParticleOptions particle() {
+        return particle;
+    }
 
     public static @Nullable FanProcessingType fromCatalyst(BlockState state) {
         if (state.is(Blocks.WATER)) {

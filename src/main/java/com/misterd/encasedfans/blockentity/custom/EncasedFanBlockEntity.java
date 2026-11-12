@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -22,13 +23,16 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class EncasedFanBlockEntity extends BlockEntity {
-    private static final float SPEED_EASING = 0.1F;
+    private static final float SPEED_EASING = 0.2F;
     private static final int AIRFLOW_REFRESH_INTERVAL = 10;
     private static final double MAX_ACCELERATION = 0.05;
-    private static final double MAX_FLOW_SPEED = 0.2;
+    private static final double MAX_FLOW_SPEED = 0.1;
     private static final int IGNITE_TICKS = 120;
     private static final int DARKNESS_TICKS = 60;
     private static final int DARKNESS_REFRESH_BELOW = 10;
+    private static final int BLOCKS_PER_PARTICLE = 4;
+    private static final float PARTICLE_CHANCE = 0.5F;
+    private static final double PARTICLE_SPREAD = 0.8;
 
     private float angle;
     private float prevAngle;
@@ -46,6 +50,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     public static void clientTick(Level level, BlockPos pos, BlockState state, EncasedFanBlockEntity fan) {
         fan.tickSpin(state);
         fan.tickAirflow(level, pos, state);
+        fan.spawnParticles(level, pos, state);
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, EncasedFanBlockEntity fan) {
@@ -106,6 +111,29 @@ public class EncasedFanBlockEntity extends BlockEntity {
             if (!level.isClientSide()) {
                 applyEffects(entity, typeAt(distance));
             }
+        }
+    }
+
+    private void spawnParticles(Level level, BlockPos pos, BlockState state) {
+        if (airflow.length == 0) {
+            return;
+        }
+        RandomSource random = level.getRandom();
+        Direction facing = state.getValue(EncasedFanBlock.FACING);
+        Vec3 axis = facing.getUnitVec3();
+        Vec3 flow = state.getValue(EncasedFanBlock.PULL) ? axis.reverse() : axis;
+        int attempts = Math.max(1, airflow.length / BLOCKS_PER_PARTICLE);
+
+        for (int i = 0; i < attempts; i++) {
+            if (random.nextFloat() > PARTICLE_CHANCE) {
+                continue;
+            }
+            double distance = random.nextDouble() * airflow.length;
+            Vec3 spread = new Vec3(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5).scale(PARTICLE_SPREAD);
+            spread = spread.subtract(axis.scale(spread.dot(axis)));
+            Vec3 position = pos.getCenter().add(axis.scale(0.5 + distance)).add(spread);
+            Vec3 velocity = flow.scale(0.05 + random.nextDouble() * 0.1);
+            level.addParticle(typeAt(distance).particle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
         }
     }
 
