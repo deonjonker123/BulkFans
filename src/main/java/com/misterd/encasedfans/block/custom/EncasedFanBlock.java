@@ -119,6 +119,6 @@ public class EncasedFanBlock extends BaseEntityBlock {
         if (level.isClientSide()) {
             return createTickerHelper(type, EFBlockEntities.ENCASED_FAN.get(), EncasedFanBlockEntity::clientTick);
         }
-        return null;
+        return createTickerHelper(type, EFBlockEntities.ENCASED_FAN.get(), EncasedFanBlockEntity::serverTick);
     }
 }
