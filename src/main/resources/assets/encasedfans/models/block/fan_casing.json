@@ -1,10 +1,10 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "encasedfan:block/fan_shell",
-		"1": "encasedfan:block/fan_mesh",
-		"2": "encasedfan:block/fan_prop_anchor",
-		"particle": "encasedfan:block/fan_shell"
+		"0": "encasedfans:block/fan_shell",
+		"1": "encasedfans:block/fan_mesh",
+		"2": "encasedfans:block/fan_prop_anchor",
+		"particle": "encasedfans:block/fan_shell"
 	},
 	"elements": [
 		{
