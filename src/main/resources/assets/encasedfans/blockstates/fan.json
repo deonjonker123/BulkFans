@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "encasedfan:block/fan_casing"
+		}
+	}
+}
