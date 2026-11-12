@@ -71,7 +71,6 @@ public class EncasedFanBlock extends BaseEntityBlock {
         }
     }
 
-    /** Airflow range in blocks for a given power level; 0 means the fan is off. */
     public static int rangeFor(int power) {
         return power <= 0 ? 0 : Math.max(3, power);
     }
