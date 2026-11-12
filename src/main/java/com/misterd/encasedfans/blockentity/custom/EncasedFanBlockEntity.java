@@ -24,8 +24,8 @@ import net.minecraft.world.phys.Vec3;
 public class EncasedFanBlockEntity extends BlockEntity {
     private static final float SPEED_EASING = 0.1F;
     private static final int AIRFLOW_REFRESH_INTERVAL = 10;
-    private static final double MAX_ACCELERATION = 0.15;
-    private static final double MAX_FLOW_SPEED = 0.5;
+    private static final double MAX_ACCELERATION = 0.05;
+    private static final double MAX_FLOW_SPEED = 0.2;
     private static final int IGNITE_TICKS = 120;
     private static final int DARKNESS_TICKS = 60;
     private static final int DARKNESS_REFRESH_BELOW = 10;
