@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "B": "minecraft:iron_bars",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "IBI",
+    "BRB",
+    "IBI"
+  ],
+  "result": {
+    "id": "encasedfans:fan"
+  }
+}
