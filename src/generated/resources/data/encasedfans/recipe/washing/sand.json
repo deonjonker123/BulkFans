@@ -4,6 +4,10 @@
   "results": [
     {
       "id": "minecraft:clay_ball"
+    },
+    {
+      "chance": 0.1,
+      "id": "minecraft:gold_nugget"
     }
   ]
 }

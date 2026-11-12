@@ -40,8 +40,8 @@ public class EFRecipeProvider extends RecipeProvider {
                 .save(output);
 
         washing("gravel", Items.GRAVEL, output(Items.FLINT, 1F), output(Items.IRON_NUGGET, 0.1F));
-        washing("sand", Items.SAND, output(Items.CLAY_BALL, 1F));
-        washing("soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F));
+        washing("sand", Items.SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
+        washing("soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F), output(Items.QUARTZ, 0.1F));
 
         haunting("sand", Items.SAND, output(Items.SOUL_SAND, 1F));
         haunting("potato", Items.POTATO, output(Items.POISONOUS_POTATO, 1F));
@@ -57,6 +57,7 @@ public class EFRecipeProvider extends RecipeProvider {
     private void haunting(String name, ItemLike input, ProcessingOutput... results) {
         output.accept(recipeKey("haunting/" + name), new HauntingRecipe(Ingredient.of(input), List.of(results)), null);
     }
+
 
     private static ProcessingOutput output(ItemLike item, float chance) {
         return new ProcessingOutput(new ItemStackTemplate(item.asItem()), chance);

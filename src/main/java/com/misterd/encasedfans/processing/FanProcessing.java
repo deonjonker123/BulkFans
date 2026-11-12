@@ -84,8 +84,8 @@ public final class FanProcessing {
     private static boolean hasResult(ServerLevel level, ItemStack stack, FanProcessingType type) {
         return switch (type) {
             case NONE -> false;
-            case SMOKING -> cookingRecipe(level, RecipeType.SMOKING, stack).isPresent();
-            case BLASTING -> blastingRecipe(level, stack).isPresent();
+            case SMOKING -> fanRecipe(level, EFRecipes.SMOKING_TYPE.get(), stack).isPresent() || cookingRecipe(level, RecipeType.SMOKING, stack).isPresent();
+            case BLASTING -> fanRecipe(level, EFRecipes.BLASTING_TYPE.get(), stack).isPresent() || blastingRecipe(level, stack).isPresent();
             case WASHING -> fanRecipe(level, EFRecipes.WASHING_TYPE.get(), stack).isPresent() || !copperStage(stack, false).isEmpty();
             case HAUNTING -> fanRecipe(level, EFRecipes.HAUNTING_TYPE.get(), stack).isPresent() || !copperStage(stack, true).isEmpty();
         };
@@ -94,8 +94,12 @@ public final class FanProcessing {
     private static List<ItemStack> process(ServerLevel level, ItemStack stack, FanProcessingType type) {
         return switch (type) {
             case NONE -> List.of();
-            case SMOKING -> cookingRecipe(level, RecipeType.SMOKING, stack).map(recipe -> cook(recipe, stack)).orElse(List.of());
-            case BLASTING -> blastingRecipe(level, stack).map(recipe -> cook(recipe, stack)).orElse(List.of());
+            case SMOKING -> fanRecipe(level, EFRecipes.SMOKING_TYPE.get(), stack)
+                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
+                    .orElseGet(() -> cookingRecipe(level, RecipeType.SMOKING, stack).map(recipe -> cook(recipe, stack)).orElse(List.of()));
+            case BLASTING -> fanRecipe(level, EFRecipes.BLASTING_TYPE.get(), stack)
+                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
+                    .orElseGet(() -> blastingRecipe(level, stack).map(recipe -> cook(recipe, stack)).orElse(List.of()));
             case WASHING -> fanRecipe(level, EFRecipes.WASHING_TYPE.get(), stack)
                     .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
                     .orElseGet(() -> List.of(copperStage(stack, false)));
