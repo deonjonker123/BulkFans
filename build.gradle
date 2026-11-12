@@ -19,7 +19,6 @@ sourceSets.main.resources {
 }
 
 repositories {
-    mavenCentral()
     maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
@@ -27,6 +26,9 @@ repositories {
     maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
+    }
+    maven {
+        url = "https://api.modrinth.com/maven"
     }
 }
 
@@ -77,8 +79,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly "maven.modrinth:jei:${project.jei_version}"
-    localRuntime "maven.modrinth:jei:${project.jei_version}"
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
