@@ -1,10 +1,16 @@
 {
 	"variants": {
-		"facing=north": { "model": "encasedfans:block/fan_casing" },
-		"facing=east": { "model": "encasedfans:block/fan_casing", "y": 90 },
-		"facing=south": { "model": "encasedfans:block/fan_casing", "y": 180 },
-		"facing=west": { "model": "encasedfans:block/fan_casing", "y": 270 },
-		"facing=up": { "model": "encasedfans:block/fan_casing", "x": 270 },
-		"facing=down": { "model": "encasedfans:block/fan_casing", "x": 90 }
+		"facing=north,pull=false": { "model": "encasedfans:block/fan_casing" },
+		"facing=east,pull=false": { "model": "encasedfans:block/fan_casing", "y": 90 },
+		"facing=south,pull=false": { "model": "encasedfans:block/fan_casing", "y": 180 },
+		"facing=west,pull=false": { "model": "encasedfans:block/fan_casing", "y": 270 },
+		"facing=up,pull=false": { "model": "encasedfans:block/fan_casing", "x": 270 },
+		"facing=down,pull=false": { "model": "encasedfans:block/fan_casing", "x": 90 },
+		"facing=north,pull=true": { "model": "encasedfans:block/fan_casing_pull" },
+		"facing=east,pull=true": { "model": "encasedfans:block/fan_casing_pull", "y": 90 },
+		"facing=south,pull=true": { "model": "encasedfans:block/fan_casing_pull", "y": 180 },
+		"facing=west,pull=true": { "model": "encasedfans:block/fan_casing_pull", "y": 270 },
+		"facing=up,pull=true": { "model": "encasedfans:block/fan_casing_pull", "x": 270 },
+		"facing=down,pull=true": { "model": "encasedfans:block/fan_casing_pull", "x": 90 }
 	}
 }

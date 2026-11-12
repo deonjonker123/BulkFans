@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.math.Quadrant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.joml.Matrix4fc;
@@ -59,6 +61,10 @@ public class EncasedFanBlockEntityRenderer implements BlockEntityRenderer<Encase
         BlockEntityRenderer.super.extractRenderState(fan, state, partialTicks, cameraPosition, breakProgress);
         state.facing = fan.getBlockState().getValue(EncasedFanBlock.FACING);
         state.angle = fan.getAngle(partialTicks);
+        if (fan.getLevel() != null) {
+            int frontLight = LevelRenderer.getLightCoords(fan.getLevel(), fan.getBlockPos().relative(state.facing));
+            state.lightCoords = LightCoordsUtil.max(state.lightCoords, frontLight);
+        }
     }
 
     @Override

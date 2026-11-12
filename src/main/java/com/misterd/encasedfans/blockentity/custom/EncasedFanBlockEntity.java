@@ -21,8 +21,11 @@ public class EncasedFanBlockEntity extends BlockEntity {
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, EncasedFanBlockEntity fan) {
         float target = targetSpeed(state.getValue(EncasedFanBlock.POWER));
+        if (state.getValue(EncasedFanBlock.PULL)) {
+            target = -target;
+        }
         fan.speed += (target - fan.speed) * SPEED_EASING;
-        if (target == 0 && fan.speed < 0.05F) {
+        if (target == 0 && Math.abs(fan.speed) < 0.05F) {
             fan.speed = 0;
         }
         fan.prevAngle = fan.angle;
@@ -30,6 +33,9 @@ public class EncasedFanBlockEntity extends BlockEntity {
         if (fan.angle >= 360) {
             fan.angle -= 360;
             fan.prevAngle -= 360;
+        } else if (fan.angle < 0) {
+            fan.angle += 360;
+            fan.prevAngle += 360;
         }
     }
 

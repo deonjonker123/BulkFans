@@ -1,9 +1,14 @@
 package com.misterd.encasedfans.block.custom;
 
+import com.misterd.encasedfans.blockentity.EFBlockEntities;
 import com.misterd.encasedfans.blockentity.custom.EncasedFanBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -11,12 +16,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 public class EncasedFanBlock extends BaseEntityBlock {
@@ -24,12 +33,14 @@ public class EncasedFanBlock extends BaseEntityBlock {
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
+    public static final BooleanProperty PULL = BooleanProperty.create("pull");
 
     public EncasedFanBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(POWER, 0));
+                .setValue(POWER, 0)
+                .setValue(PULL, false));
     }
 
     @Override
@@ -39,7 +50,7 @@ public class EncasedFanBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, POWER);
+        builder.add(FACING, POWER, PULL);
     }
 
     @Override
@@ -47,6 +58,19 @@ public class EncasedFanBlock extends BaseEntityBlock {
         return this.defaultBlockState()
                 .setValue(FACING, context.getNearestLookingDirection().getOpposite())
                 .setValue(POWER, context.getLevel().getBestNeighborSignal(context.getClickedPos()));
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!player.isSecondaryUseActive()) {
+            return InteractionResult.PASS;
+        }
+        if (!level.isClientSide()) {
+            BlockState toggled = state.cycle(PULL);
+            level.setBlock(pos, toggled, Block.UPDATE_CLIENTS);
+            level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, toggled.getValue(PULL) ? 0.5F : 0.6F);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -88,5 +112,13 @@ public class EncasedFanBlock extends BaseEntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new EncasedFanBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide()) {
+            return createTickerHelper(type, EFBlockEntities.ENCASED_FAN.get(), EncasedFanBlockEntity::clientTick);
+        }
+        return null;
     }
 }
