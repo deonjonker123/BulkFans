@@ -2,9 +2,11 @@ package com.misterd.encasedfans.blockentity.custom;
 
 import com.misterd.encasedfans.block.custom.EncasedFanBlock;
 import com.misterd.encasedfans.blockentity.EFBlockEntities;
+import com.misterd.encasedfans.processing.FanProcessing;
 import com.misterd.encasedfans.processing.FanProcessingType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -33,6 +35,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     private static final int BLOCKS_PER_PARTICLE = 4;
     private static final float PARTICLE_CHANCE = 0.5F;
     private static final double PARTICLE_SPREAD = 0.8;
+    private static final int PROCESS_INTERVAL = 5;
 
     private float angle;
     private float prevAngle;
@@ -42,6 +45,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     private int airflowRange;
     private int airflowRefreshTimer;
     private BlockState airflowState;
+    private int processTimer;
 
     public EncasedFanBlockEntity(BlockPos pos, BlockState state) {
         super(EFBlockEntities.ENCASED_FAN.get(), pos, state);
@@ -55,6 +59,10 @@ public class EncasedFanBlockEntity extends BlockEntity {
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, EncasedFanBlockEntity fan) {
         fan.tickAirflow(level, pos, state);
+        if (--fan.processTimer <= 0 && level instanceof ServerLevel serverLevel) {
+            fan.processTimer = PROCESS_INTERVAL;
+            fan.processItems(serverLevel, pos, state);
+        }
     }
 
     private void tickSpin(BlockState state) {
@@ -101,7 +109,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
 
         Direction facing = state.getValue(EncasedFanBlock.FACING);
         boolean pull = state.getValue(EncasedFanBlock.PULL);
-        AABB area = AABB.encapsulatingFullBlocks(pos.relative(facing), pos.relative(facing, airflow.length));
+        AABB area = airflowArea(pos, facing);
 
         for (Entity entity : level.getEntities((Entity) null, area, entity -> !entity.isSpectator())) {
             double distance = distanceFromFan(pos, facing, entity);
@@ -112,6 +120,20 @@ public class EncasedFanBlockEntity extends BlockEntity {
                 applyEffects(entity, typeAt(distance));
             }
         }
+    }
+
+    private void processItems(ServerLevel level, BlockPos pos, BlockState state) {
+        if (airflow.length == 0) {
+            return;
+        }
+        Direction facing = state.getValue(EncasedFanBlock.FACING);
+        for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, airflowArea(pos, facing), ItemEntity::isAlive)) {
+            FanProcessing.tick(level, item, typeAt(distanceFromFan(pos, facing, item)), PROCESS_INTERVAL);
+        }
+    }
+
+    private AABB airflowArea(BlockPos pos, Direction facing) {
+        return AABB.encapsulatingFullBlocks(pos.relative(facing), pos.relative(facing, airflow.length));
     }
 
     private void spawnParticles(Level level, BlockPos pos, BlockState state) {

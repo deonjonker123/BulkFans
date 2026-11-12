@@ -1,0 +1,9 @@
+{
+  "type": "encasedfans:haunting",
+  "ingredient": "minecraft:lantern",
+  "results": [
+    {
+      "id": "minecraft:soul_lantern"
+    }
+  ]
+}

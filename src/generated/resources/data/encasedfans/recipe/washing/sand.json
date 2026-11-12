@@ -1,0 +1,9 @@
+{
+  "type": "encasedfans:washing",
+  "ingredient": "minecraft:sand",
+  "results": [
+    {
+      "id": "minecraft:clay_ball"
+    }
+  ]
+}

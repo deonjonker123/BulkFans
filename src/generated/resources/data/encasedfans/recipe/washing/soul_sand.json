@@ -1,0 +1,9 @@
+{
+  "type": "encasedfans:washing",
+  "ingredient": "minecraft:soul_sand",
+  "results": [
+    {
+      "id": "minecraft:sand"
+    }
+  ]
+}

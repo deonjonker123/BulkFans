@@ -1,0 +1,9 @@
+{
+  "type": "encasedfans:haunting",
+  "ingredient": "minecraft:campfire",
+  "results": [
+    {
+      "id": "minecraft:soul_campfire"
+    }
+  ]
+}

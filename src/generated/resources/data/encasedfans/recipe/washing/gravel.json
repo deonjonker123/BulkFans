@@ -1,0 +1,13 @@
+{
+  "type": "encasedfans:washing",
+  "ingredient": "minecraft:gravel",
+  "results": [
+    {
+      "id": "minecraft:flint"
+    },
+    {
+      "chance": 0.1,
+      "id": "minecraft:iron_nugget"
+    }
+  ]
+}

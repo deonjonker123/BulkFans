@@ -2,17 +2,22 @@ package com.misterd.encasedfans.processing;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
-public enum FanProcessingType {
+import java.util.Locale;
+
+public enum FanProcessingType implements StringRepresentable {
     NONE(ParticleTypes.CLOUD),
     WASHING(ParticleTypes.SPLASH),
     SMOKING(ParticleTypes.SMOKE),
     BLASTING(ParticleTypes.SMALL_FLAME),
     HAUNTING(ParticleTypes.SOUL_FIRE_FLAME);
+
+    public static final StringRepresentable.EnumCodec<FanProcessingType> CODEC = StringRepresentable.fromEnum(FanProcessingType::values);
 
     private final ParticleOptions particle;
 
@@ -22,6 +27,11 @@ public enum FanProcessingType {
 
     public ParticleOptions particle() {
         return particle;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 
     public static @Nullable FanProcessingType fromCatalyst(BlockState state) {
