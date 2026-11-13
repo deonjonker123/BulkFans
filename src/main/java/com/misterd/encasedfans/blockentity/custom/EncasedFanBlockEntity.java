@@ -192,6 +192,13 @@ public class EncasedFanBlockEntity extends BlockEntity {
         while (airflow.size() < airflowRange) {
             cursor.move(facing);
             BlockState cellState = level.getBlockState(cursor);
+            if (cellState.getBlock() instanceof TrayBlock) {
+                airflow.add(current);
+                if (!(level.getBlockState(cursor.relative(facing)).getBlock() instanceof TrayBlock)) {
+                    break;
+                }
+                continue;
+            }
             Optional<Holder<ProcessingType>> catalyst = FanCatalysts.find(level, cellState);
             if (catalyst.isPresent()) {
                 current = catalyst.get();
@@ -203,7 +210,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     }
 
     private static boolean blocksAirflow(Level level, BlockPos pos, BlockState state, Direction facing) {
-        if (state.isAir() || state.getBlock() instanceof TrayBlock) {
+        if (state.isAir()) {
             return false;
         }
         if (state.getBlock() instanceof TrapDoorBlock) {
