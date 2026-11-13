@@ -2,8 +2,11 @@ package com.misterd.encasedfans.processing;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +17,9 @@ public record ProcessingType(
         Optional<CopperTransform> copperTransform,
         boolean ignitesEntities,
         boolean extinguishesEntities,
-        List<EntityEffect> effects) {
+        List<EntityEffect> effects,
+        Optional<Holder<Item>> icon,
+        Optional<ItemStackTemplate> display) {
 
     public static final Codec<ProcessingType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ParticleTypes.CODEC.fieldOf("particle").forGetter(ProcessingType::particle),
@@ -22,6 +27,8 @@ public record ProcessingType(
             CopperTransform.CODEC.optionalFieldOf("copper_transform").forGetter(ProcessingType::copperTransform),
             Codec.BOOL.optionalFieldOf("ignite_entities", false).forGetter(ProcessingType::ignitesEntities),
             Codec.BOOL.optionalFieldOf("extinguish_entities", false).forGetter(ProcessingType::extinguishesEntities),
-            EntityEffect.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(ProcessingType::effects)
+            EntityEffect.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(ProcessingType::effects),
+            Item.CODEC.optionalFieldOf("icon").forGetter(ProcessingType::icon),
+            ItemStackTemplate.CODEC.optionalFieldOf("display").forGetter(ProcessingType::display)
     ).apply(instance, ProcessingType::new));
 }

@@ -33,5 +33,11 @@
   "encasedfans.configuration.spinEasing": "Spin Easing",
   "encasedfans.configuration.particles": "Airflow Particles",
   "encasedfans.configuration.particleChance": "Particle Chance",
-  "encasedfans.configuration.blocksPerParticle": "Blocks Per Particle"
+  "encasedfans.configuration.blocksPerParticle": "Blocks Per Particle",
+
+  "encasedfans.processing_type.encasedfans.washing": "Fan Washing",
+  "encasedfans.processing_type.encasedfans.smoking": "Fan Smoking",
+  "encasedfans.processing_type.encasedfans.blasting": "Fan Blasting",
+  "encasedfans.processing_type.encasedfans.haunting": "Fan Haunting",
+  "encasedfans.jei.chance": "%s%% Chance"
 }

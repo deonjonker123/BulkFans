@@ -7,6 +7,8 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -31,5 +33,10 @@ public class EFRecipes {
         RECIPE_TYPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
         RECIPE_BOOK_CATEGORIES.register(eventBus);
+        NeoForge.EVENT_BUS.addListener(EFRecipes::syncRecipes);
+    }
+
+    private static void syncRecipes(OnDatapackSyncEvent event) {
+        event.sendRecipes(FAN_PROCESSING_TYPE.get(), RecipeType.SMOKING, RecipeType.BLASTING, RecipeType.SMELTING);
     }
 }

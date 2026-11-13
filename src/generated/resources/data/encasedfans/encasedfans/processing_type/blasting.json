@@ -1,4 +1,11 @@
 {
+  "display": {
+    "components": {
+      "minecraft:item_model": "encasedfans:jei/lava"
+    },
+    "id": "minecraft:barrier"
+  },
+  "icon": "minecraft:lava_bucket",
   "ignite_entities": true,
   "particle": {
     "type": "minecraft:small_flame"

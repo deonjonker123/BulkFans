@@ -1,4 +1,11 @@
 {
+  "display": {
+    "components": {
+      "minecraft:item_model": "encasedfans:jei/fire"
+    },
+    "id": "minecraft:barrier"
+  },
+  "icon": "minecraft:campfire",
   "ignite_entities": true,
   "particle": {
     "type": "minecraft:smoke"
