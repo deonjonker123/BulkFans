@@ -17,6 +17,11 @@ public class EFBlockTagsProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(EFBlocks.ENCASED_FAN.get());
+                .add(EFBlocks.ENCASED_FAN.get())
+                .add(EFBlocks.TRAY.get())
+                .add(EFBlocks.FIRE_CATALYST.get())
+                .add(EFBlocks.SOUL_FIRE_CATALYST.get())
+                .add(EFBlocks.LAVA_CATALYST.get())
+                .add(EFBlocks.WATER_CATALYST.get());
     }
 }

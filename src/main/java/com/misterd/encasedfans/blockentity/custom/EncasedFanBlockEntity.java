@@ -1,6 +1,7 @@
 package com.misterd.encasedfans.blockentity.custom;
 
 import com.misterd.encasedfans.block.custom.EncasedFanBlock;
+import com.misterd.encasedfans.block.custom.TrayBlock;
 import com.misterd.encasedfans.blockentity.EFBlockEntities;
 import com.misterd.encasedfans.config.EFConfig;
 import com.misterd.encasedfans.processing.EntityEffect;
@@ -140,6 +141,13 @@ public class EncasedFanBlockEntity extends BlockEntity {
                 FanProcessing.tick(level, item, type, interval);
             }
         }
+        BlockPos.MutableBlockPos cursor = pos.mutable();
+        for (Holder<ProcessingType> type : airflow) {
+            cursor.move(facing);
+            if (type != null && level.getBlockEntity(cursor) instanceof TrayBlockEntity tray) {
+                tray.process(level, type, interval);
+            }
+        }
     }
 
     private AABB airflowArea(BlockPos pos, Direction facing) {
@@ -195,7 +203,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     }
 
     private static boolean blocksAirflow(Level level, BlockPos pos, BlockState state, Direction facing) {
-        if (state.isAir()) {
+        if (state.isAir() || state.getBlock() instanceof TrayBlock) {
             return false;
         }
         if (state.getBlock() instanceof TrapDoorBlock) {

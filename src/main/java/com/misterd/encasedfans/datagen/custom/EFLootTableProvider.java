@@ -17,6 +17,11 @@ public class EFLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         dropSelf(EFBlocks.ENCASED_FAN.get());
+        dropSelf(EFBlocks.TRAY.get());
+        dropSelf(EFBlocks.FIRE_CATALYST.get());
+        dropSelf(EFBlocks.SOUL_FIRE_CATALYST.get());
+        dropSelf(EFBlocks.LAVA_CATALYST.get());
+        dropSelf(EFBlocks.WATER_CATALYST.get());
     }
 
     @Override

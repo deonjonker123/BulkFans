@@ -1,5 +1,6 @@
 package com.misterd.encasedfans.datagen.custom;
 
+import com.misterd.encasedfans.block.EFBlocks;
 import com.misterd.encasedfans.datamap.BlockCatalyst;
 import com.misterd.encasedfans.datamap.EFDataMaps;
 import com.misterd.encasedfans.datamap.FluidCatalyst;
@@ -33,7 +34,12 @@ public class EFDataMapProvider extends DataMapProvider {
                 .add(block(Blocks.FIRE), new BlockCatalyst(EFProcessingTypes.SMOKING, Optional.empty()), false)
                 .add(block(Blocks.CAMPFIRE), new BlockCatalyst(EFProcessingTypes.SMOKING, lit), false)
                 .add(block(Blocks.SOUL_FIRE), new BlockCatalyst(EFProcessingTypes.HAUNTING, Optional.empty()), false)
-                .add(block(Blocks.SOUL_CAMPFIRE), new BlockCatalyst(EFProcessingTypes.HAUNTING, lit), false);
+                .add(block(Blocks.SOUL_CAMPFIRE), new BlockCatalyst(EFProcessingTypes.HAUNTING, lit), false)
+                .add(block(EFBlocks.FIRE_CATALYST.get()), new BlockCatalyst(EFProcessingTypes.SMOKING, Optional.empty()), false)
+                .add(block(EFBlocks.SOUL_FIRE_CATALYST.get()), new BlockCatalyst(EFProcessingTypes.HAUNTING, Optional.empty()), false)
+                .add(block(EFBlocks.LAVA_CATALYST.get()), new BlockCatalyst(EFProcessingTypes.BLASTING, Optional.empty()), false)
+                .add(block(EFBlocks.WATER_CATALYST.get()), new BlockCatalyst(EFProcessingTypes.WASHING, Optional.empty()), false);;
+
 
         builder(EFDataMaps.FLUID_CATALYSTS)
                 .add(fluid(Fluids.WATER), new FluidCatalyst(EFProcessingTypes.WASHING), false)

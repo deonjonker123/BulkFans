@@ -1,5 +1,17 @@
 {
   "values": {
+    "encasedfans:fire_catalyst": {
+      "processing_type": "encasedfans:smoking"
+    },
+    "encasedfans:lava_catalyst": {
+      "processing_type": "encasedfans:blasting"
+    },
+    "encasedfans:soul_fire_catalyst": {
+      "processing_type": "encasedfans:haunting"
+    },
+    "encasedfans:water_catalyst": {
+      "processing_type": "encasedfans:washing"
+    },
     "minecraft:campfire": {
       "processing_type": "encasedfans:smoking",
       "state": {

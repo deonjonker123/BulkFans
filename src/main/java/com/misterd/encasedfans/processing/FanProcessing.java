@@ -58,10 +58,7 @@ public final class FanProcessing {
         int ticks = progress.isFor(key.get()) ? progress.ticks() + elapsed : elapsed;
         if (ticks < requiredTicks(stack.getCount())) {
             entity.setData(EFAttachments.PROCESSING_PROGRESS, new ProcessingProgress(key, ticks));
-            int particles = EFConfig.SERVER.processingParticles.get();
-            if (particles > 0) {
-                level.sendParticles(ParticleTypes.LARGE_SMOKE, entity.getX(), entity.getY() + 0.25, entity.getZ(), particles, 0.1, 0.05, 0.1, 0.0);
-            }
+            spawnProcessingParticles(level, entity.getX(), entity.getY() + 0.25, entity.getZ());
             return;
         }
 
@@ -95,7 +92,7 @@ public final class FanProcessing {
                 || !copperStage(stack, type).isEmpty();
     }
 
-    private static List<ItemStack> process(ServerLevel level, ItemStack stack, Holder<ProcessingType> type) {
+    public static List<ItemStack> process(ServerLevel level, ItemStack stack, Holder<ProcessingType> type) {
         Optional<FanProcessingRecipe> recipe = type.unwrapKey().flatMap(key -> fanRecipe(level, key, stack));
         if (recipe.isPresent()) {
             return recipe.get().rollResults(stack.getCount(), level.getRandom());
@@ -186,6 +183,13 @@ public final class FanProcessing {
             if (holder.value() instanceof AbstractCookingRecipe recipe) {
                 recipe.input().items().forEach(item -> SMOKABLE.add(item.value()));
             }
+        }
+    }
+
+    public static void spawnProcessingParticles(ServerLevel level, double x, double y, double z) {
+        int particles = EFConfig.SERVER.processingParticles.get();
+        if (particles > 0) {
+            level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, particles, 0.1, 0.05, 0.1, 0.0);
         }
     }
 }

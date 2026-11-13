@@ -14,6 +14,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,11 +41,35 @@ public class EFRecipeProvider extends RecipeProvider {
                 .unlockedBy(getHasName(Items.REDSTONE), has(Items.REDSTONE))
                 .save(output);
 
+        shaped(RecipeCategory.MISC, EFBlocks.TRAY.get())
+                .pattern("I I")
+                .pattern("SSS")
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.SMOOTH_STONE_SLAB)
+                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, EFBlocks.SOUL_FIRE_CATALYST.get())
+                .pattern("BBB")
+                .pattern("BFB")
+                .pattern("BSB")
+                .define('B', Items.IRON_BARS)
+                .define('F', Items.FLINT_AND_STEEL)
+                .define('S', ItemTags.SOUL_FIRE_BASE_BLOCKS)
+                .unlockedBy(getHasName(Items.IRON_BARS), has(Items.IRON_BARS))
+                .save(output);
+
+        catalyst(EFBlocks.FIRE_CATALYST.get(), Items.FLINT_AND_STEEL);
+        catalyst(EFBlocks.LAVA_CATALYST.get(), Items.LAVA_BUCKET);
+        catalyst(EFBlocks.WATER_CATALYST.get(), Items.WATER_BUCKET);
+
         fan(EFProcessingTypes.WASHING, "gravel", Items.GRAVEL, output(Items.FLINT, 1F), output(Items.IRON_NUGGET, 0.1F));
         fan(EFProcessingTypes.WASHING, "sand", Items.SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
         fan(EFProcessingTypes.WASHING, "red_sand", Items.RED_SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
         fan(EFProcessingTypes.WASHING, "soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F), output(Items.QUARTZ, 0.05F));
         fan(EFProcessingTypes.WASHING, "soul_soil", Items.SOUL_SOIL, output(Items.RED_SAND, 1F));
+        fan(EFProcessingTypes.WASHING, "crimson_fungus", Items.CRIMSON_FUNGUS, output(Items.RED_MUSHROOM, 1F));
+        fan(EFProcessingTypes.WASHING, "warped_fungus", Items.WARPED_FUNGUS, output(Items.BROWN_MUSHROOM, 1F));
 
         fan(EFProcessingTypes.HAUNTING, "sand", Items.SAND, output(Items.SOUL_SAND, 1F));
         fan(EFProcessingTypes.HAUNTING, "red_sand", Items.RED_SAND, output(Items.SOUL_SOIL, 1F));
@@ -52,6 +77,8 @@ public class EFRecipeProvider extends RecipeProvider {
         fan(EFProcessingTypes.HAUNTING, "torch", Items.TORCH, output(Items.SOUL_TORCH, 1F));
         fan(EFProcessingTypes.HAUNTING, "lantern", Items.LANTERN, output(Items.SOUL_LANTERN, 1F));
         fan(EFProcessingTypes.HAUNTING, "campfire", Items.CAMPFIRE, output(Items.SOUL_CAMPFIRE, 1F));
+        fan(EFProcessingTypes.HAUNTING, "brown_mushroom", Items.BROWN_MUSHROOM, output(Items.WARPED_FUNGUS, 1F));
+        fan(EFProcessingTypes.HAUNTING, "red_mushroom", Items.RED_MUSHROOM, output(Items.CRIMSON_FUNGUS, 1F));
     }
 
     private void fan(ResourceKey<ProcessingType> type, String name, ItemLike input, ProcessingOutput... results) {
@@ -65,6 +92,17 @@ public class EFRecipeProvider extends RecipeProvider {
 
     private static ResourceKey<Recipe<?>> recipeKey(String path) {
         return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EncasedFans.MODID, path));
+    }
+
+    private void catalyst(ItemLike result, ItemLike source) {
+        shaped(RecipeCategory.MISC, result)
+                .pattern("BBB")
+                .pattern("BXB")
+                .pattern("BBB")
+                .define('B', Items.IRON_BARS)
+                .define('X', source)
+                .unlockedBy(getHasName(Items.IRON_BARS), has(Items.IRON_BARS))
+                .save(output);
     }
 
     public static class Runner extends RecipeProvider.Runner {

@@ -19,6 +19,11 @@ public class EFCreativeTab {
                     .icon(() -> new ItemStack(EFItems.ENCASED_FAN.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(EFItems.ENCASED_FAN.get());
+                        output.accept(EFItems.TRAY.get());
+                        output.accept(EFItems.FIRE_CATALYST.get());
+                        output.accept(EFItems.SOUL_FIRE_CATALYST.get());
+                        output.accept(EFItems.LAVA_CATALYST.get());
+                        output.accept(EFItems.WATER_CATALYST.get());
                     })
                     .build());
 

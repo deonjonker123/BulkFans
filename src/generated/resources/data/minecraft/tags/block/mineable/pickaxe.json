@@ -1,5 +1,10 @@
 {
   "values": [
-    "encasedfans:fan"
+    "encasedfans:fan",
+    "encasedfans:tray",
+    "encasedfans:fire_catalyst",
+    "encasedfans:soul_fire_catalyst",
+    "encasedfans:lava_catalyst",
+    "encasedfans:water_catalyst"
   ]
 }
