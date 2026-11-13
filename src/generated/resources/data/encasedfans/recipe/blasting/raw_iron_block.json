@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:raw_iron_block",
+  "processing_type": "encasedfans:blasting",
+  "results": [
+    {
+      "id": "minecraft:iron_block"
+    }
+  ]
+}

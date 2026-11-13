@@ -79,6 +79,10 @@ public class EFRecipeProvider extends RecipeProvider {
         fan(EFProcessingTypes.HAUNTING, "campfire", Items.CAMPFIRE, output(Items.SOUL_CAMPFIRE, 1F));
         fan(EFProcessingTypes.HAUNTING, "brown_mushroom", Items.BROWN_MUSHROOM, output(Items.WARPED_FUNGUS, 1F));
         fan(EFProcessingTypes.HAUNTING, "red_mushroom", Items.RED_MUSHROOM, output(Items.CRIMSON_FUNGUS, 1F));
+
+        fan(EFProcessingTypes.BLASTING, "raw_iron_block", Items.RAW_IRON_BLOCK, output(Items.IRON_BLOCK, 1F));
+        fan(EFProcessingTypes.BLASTING, "raw_copper_block", Items.RAW_COPPER_BLOCK, output(Items.COPPER_BLOCK, 1F));
+        fan(EFProcessingTypes.BLASTING, "raw_gold_block", Items.RAW_GOLD_BLOCK, output(Items.GOLD_BLOCK, 1F));
     }
 
     private void fan(ResourceKey<ProcessingType> type, String name, ItemLike input, ProcessingOutput... results) {
