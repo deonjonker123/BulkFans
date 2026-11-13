@@ -51,18 +51,19 @@ public class BFRecipeProvider extends RecipeProvider {
 
         shaped(RecipeCategory.TOOLS, BFItems.SPANNER.get())
                 .pattern("I I")
-                .pattern(" I ")
-                .pattern(" I ")
-                .define('I', Items.IRON_INGOT)
-                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
+                .pattern(" S ")
+                .pattern(" S ")
+                .define('I', Items.COPPER_INGOT)
+                .define('S', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(Items.COPPER_INGOT), has(Items.COPPER_INGOT))
                 .save(output);
 
         shaped(RecipeCategory.MISC, BFBlocks.TRAY.get())
-                .pattern("I I")
+                .pattern("III")
                 .pattern("SSS")
-                .define('I', Items.IRON_INGOT)
+                .define('I', Items.COPPER_INGOT)
                 .define('S', Items.SMOOTH_STONE_SLAB)
-                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
+                .unlockedBy(getHasName(Items.COPPER_INGOT), has(Items.COPPER_INGOT))
                 .save(output);
 
         shaped(RecipeCategory.MISC, BFBlocks.SOUL_FIRE_CATALYST.get())

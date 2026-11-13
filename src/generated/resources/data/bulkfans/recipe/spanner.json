@@ -2,12 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": "minecraft:iron_ingot"
+    "I": "minecraft:copper_ingot",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "I I",
-    " I ",
-    " I "
+    " S ",
+    " S "
   ],
   "result": {
     "id": "bulkfans:spanner"

@@ -22,3 +22,10 @@ Redstone-powered fans that wash, smoke, blast, and haunt dropped items in bulk. 
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="*"
+    ordering="NONE"
+    side="CLIENT"
