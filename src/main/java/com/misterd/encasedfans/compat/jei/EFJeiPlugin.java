@@ -14,6 +14,7 @@ import com.misterd.encasedfans.recipe.custom.ProcessingOutput;
 import com.misterd.encasedfans.util.EFTags;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -37,6 +38,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,10 +77,10 @@ public class EFJeiPlugin implements IModPlugin {
             IRecipeType<FanJeiRecipe> type = IRecipeType.create(
                     Identifier.fromNamespaceAndPath(EncasedFans.MODID, id.getNamespace() + "_" + id.getPath()), FanJeiRecipe.class);
             recipeTypes.put(key, type);
-            ItemStack fallback = displayCatalyst(key);
-            ItemStack decorator = holder.value().icon().map(ItemStack::new).orElse(fallback);
-            ItemStack scene = holder.value().display().map(ItemStackTemplate::create).orElse(fallback);
-            registration.addRecipeCategories(new FanProcessingCategory(type, key, decorator, scene));
+            List<ItemStack> blocks = catalystBlocks(key);
+            List<Fluid> fluids = catalystFluids(key);
+            ItemStack decorator = holder.value().icon().map(ItemStack::new).orElseGet(() -> fallbackIcon(blocks, fluids));
+            registration.addRecipeCategories(new FanProcessingCategory(type, key, decorator, blocks, fluids));
         }));
     }
 
@@ -85,8 +88,11 @@ public class EFJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         for (Map.Entry<ResourceKey<ProcessingType>, IRecipeType<FanJeiRecipe>> entry : recipeTypes.entrySet()) {
             registration.addCraftingStation(entry.getValue(), EFItems.ENCASED_FAN.get(), EFItems.TRAY.get());
-            for (ItemStack catalyst : catalystItems(entry.getKey())) {
-                registration.addCraftingStation(entry.getValue(), catalyst);
+            for (ItemStack block : catalystBlocks(entry.getKey())) {
+                registration.addCraftingStation(entry.getValue(), block);
+            }
+            for (Fluid fluid : catalystFluids(entry.getKey())) {
+                registration.addCraftingStation(entry.getValue(), NeoForgeTypes.FLUID_STACK, new FluidStack(fluid, FluidType.BUCKET_VOLUME));
             }
         }
     }
@@ -166,7 +172,7 @@ public class EFJeiPlugin implements IModPlugin {
         return stack.is(EFTags.Items.BLASTING_EXCLUDE) || smokable.contains(item);
     }
 
-    private static List<ItemStack> catalystItems(ResourceKey<ProcessingType> key) {
+    private static List<ItemStack> catalystBlocks(ResourceKey<ProcessingType> key) {
         List<ItemStack> ours = new ArrayList<>();
         List<ItemStack> others = new ArrayList<>();
         for (Block block : BuiltInRegistries.BLOCK) {
@@ -180,18 +186,28 @@ public class EFJeiPlugin implements IModPlugin {
                 }
             }
         }
-        for (Fluid fluid : BuiltInRegistries.FLUID) {
-            FluidCatalyst catalyst = fluid.builtInRegistryHolder().getData(EFDataMaps.FLUID_CATALYSTS);
-            if (catalyst != null && catalyst.processingType().equals(key) && fluid.getBucket() != Items.AIR) {
-                others.add(new ItemStack(fluid.getBucket()));
-            }
-        }
         ours.addAll(others);
         return ours;
     }
 
-    private static ItemStack displayCatalyst(ResourceKey<ProcessingType> key) {
-        List<ItemStack> catalysts = catalystItems(key);
-        return catalysts.isEmpty() ? new ItemStack(Items.BARRIER) : catalysts.getFirst();
+    private static List<Fluid> catalystFluids(ResourceKey<ProcessingType> key) {
+        List<Fluid> fluids = new ArrayList<>();
+        for (Fluid fluid : BuiltInRegistries.FLUID) {
+            FluidCatalyst catalyst = fluid.builtInRegistryHolder().getData(EFDataMaps.FLUID_CATALYSTS);
+            if (catalyst != null && catalyst.processingType().equals(key)) {
+                fluids.add(fluid);
+            }
+        }
+        return fluids;
+    }
+
+    private static ItemStack fallbackIcon(List<ItemStack> blocks, List<Fluid> fluids) {
+        if (!blocks.isEmpty()) {
+            return blocks.getFirst();
+        }
+        if (!fluids.isEmpty() && fluids.getFirst().getBucket() != Items.AIR) {
+            return new ItemStack(fluids.getFirst().getBucket());
+        }
+        return new ItemStack(Items.BARRIER);
     }
 }

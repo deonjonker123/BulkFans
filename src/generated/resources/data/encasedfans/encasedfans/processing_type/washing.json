@@ -1,11 +1,5 @@
 {
   "copper_transform": "deoxidize",
-  "display": {
-    "components": {
-      "minecraft:item_model": "encasedfans:jei/water"
-    },
-    "id": "minecraft:barrier"
-  },
   "extinguish_entities": true,
   "icon": "minecraft:water_bucket",
   "particle": {

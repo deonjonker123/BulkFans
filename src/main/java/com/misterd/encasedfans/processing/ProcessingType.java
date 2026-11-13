@@ -6,7 +6,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +17,7 @@ public record ProcessingType(
         boolean ignitesEntities,
         boolean extinguishesEntities,
         List<EntityEffect> effects,
-        Optional<Holder<Item>> icon,
-        Optional<ItemStackTemplate> display) {
+        Optional<Holder<Item>> icon) {
 
     public static final Codec<ProcessingType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ParticleTypes.CODEC.fieldOf("particle").forGetter(ProcessingType::particle),
@@ -28,7 +26,6 @@ public record ProcessingType(
             Codec.BOOL.optionalFieldOf("ignite_entities", false).forGetter(ProcessingType::ignitesEntities),
             Codec.BOOL.optionalFieldOf("extinguish_entities", false).forGetter(ProcessingType::extinguishesEntities),
             EntityEffect.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(ProcessingType::effects),
-            Item.CODEC.optionalFieldOf("icon").forGetter(ProcessingType::icon),
-            ItemStackTemplate.CODEC.optionalFieldOf("display").forGetter(ProcessingType::display)
+            Item.CODEC.optionalFieldOf("icon").forGetter(ProcessingType::icon)
     ).apply(instance, ProcessingType::new));
 }

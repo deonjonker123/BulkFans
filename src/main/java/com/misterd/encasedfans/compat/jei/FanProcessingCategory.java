@@ -8,6 +8,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.ChatFormatting;
@@ -16,24 +17,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.List;
 
 public class FanProcessingCategory extends AbstractRecipeCategory<FanJeiRecipe> {
     public static final int WIDTH = 178;
-    public static final int HEIGHT = 86;
+    public static final int HEIGHT = 36;
     private static final int MAX_OUTPUTS = 6;
     private static final int COLUMNS = 3;
     private static final int SLOT_SIZE = 18;
-    private static final int EDGE = 4;
-    private static final int ARROW_GAP = 8;
-    private static final int SLOT_ROW_Y = 56;
+    private static final int SPRITE_SIZE = 16;
+    private static final int EDGE = 1;
+    private static final int ARROW_GAP = 6;
+    private static final int SLOT_ROW_Y = 9;
+    private static final int FAN_X = EDGE;
+    private static final int CATALYST_X = FAN_X + SLOT_SIZE;
+    private static final int INPUT_X = CATALYST_X + SLOT_SIZE + 4;
 
-    private final FanSceneDrawable scene;
+    private final List<ItemStack> catalystBlocks;
+    private final List<Fluid> catalystFluids;
 
-    public FanProcessingCategory(IRecipeType<FanJeiRecipe> recipeType, ResourceKey<ProcessingType> key, ItemStack decorator, ItemStack catalyst) {
+    public FanProcessingCategory(IRecipeType<FanJeiRecipe> recipeType, ResourceKey<ProcessingType> key, ItemStack decorator, List<ItemStack> catalystBlocks, List<Fluid> catalystFluids) {
         super(recipeType, title(key), new FanIconDrawable(new ItemStack(EFItems.ENCASED_FAN.get()), decorator), WIDTH, HEIGHT);
-        this.scene = new FanSceneDrawable(new ItemStack(EFItems.ENCASED_FAN.get()), catalyst, 2.0F);
+        this.catalystBlocks = catalystBlocks;
+        this.catalystFluids = catalystFluids;
     }
 
     public static Component title(ResourceKey<ProcessingType> key) {
@@ -55,7 +64,20 @@ public class FanProcessingCategory extends AbstractRecipeCategory<FanJeiRecipe> 
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, FanJeiRecipe recipe, IFocusGroup focuses) {
-        builder.addInputSlot(EDGE, SLOT_ROW_Y).setStandardSlotBackground().add(recipe.input());
+        builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, FAN_X, SLOT_ROW_Y).setStandardSlotBackground()
+                .add(new ItemStack(EFItems.ENCASED_FAN.get()));
+
+        IRecipeSlotBuilder catalyst = builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, CATALYST_X, SLOT_ROW_Y)
+                .setStandardSlotBackground()
+                .addItemStacks(catalystBlocks);
+        if (!catalystFluids.isEmpty()) {
+            catalyst.setFluidRenderer(FluidType.BUCKET_VOLUME, false, SPRITE_SIZE, SPRITE_SIZE);
+            for (Fluid fluid : catalystFluids) {
+                catalyst.add(fluid, FluidType.BUCKET_VOLUME);
+            }
+        }
+
+        builder.addInputSlot(INPUT_X, SLOT_ROW_Y).setStandardSlotBackground().add(recipe.input());
 
         List<ProcessingOutput> outputs = shownOutputs(recipe);
         int columns = columns(recipe);
@@ -77,8 +99,7 @@ public class FanProcessingCategory extends AbstractRecipeCategory<FanJeiRecipe> 
 
     @Override
     public void draw(FanJeiRecipe recipe, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
-        scene.draw(graphics, (WIDTH - scene.getWidth()) / 2, 4);
-        int arrowStart = EDGE + SLOT_SIZE + ARROW_GAP;
+        int arrowStart = INPUT_X + SLOT_SIZE + ARROW_GAP;
         ThinArrowDrawable arrow = new ThinArrowDrawable(outputsLeft(recipe) - ARROW_GAP - arrowStart);
         arrow.draw(graphics, arrowStart, SLOT_ROW_Y + (SLOT_SIZE - arrow.getHeight()) / 2);
     }

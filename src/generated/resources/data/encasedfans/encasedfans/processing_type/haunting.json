@@ -1,11 +1,5 @@
 {
   "copper_transform": "oxidize",
-  "display": {
-    "components": {
-      "minecraft:item_model": "encasedfans:jei/soul_fire"
-    },
-    "id": "minecraft:barrier"
-  },
   "effects": [
     {
       "id": "minecraft:darkness"
