@@ -2,6 +2,7 @@ package com.misterd.encasedfans.datagen.custom;
 
 import com.misterd.encasedfans.EncasedFans;
 import com.misterd.encasedfans.block.EFBlocks;
+import com.misterd.encasedfans.item.EFItems;
 import com.misterd.encasedfans.processing.EFProcessingTypes;
 import com.misterd.encasedfans.processing.ProcessingType;
 import com.misterd.encasedfans.recipe.custom.FanProcessingRecipe;
@@ -46,6 +47,14 @@ public class EFRecipeProvider extends RecipeProvider {
                 .define('B', Items.IRON_BARS)
                 .define('R', Items.REDSTONE)
                 .unlockedBy(getHasName(Items.REDSTONE), has(Items.REDSTONE))
+                .save(output);
+
+        shaped(RecipeCategory.TOOLS, EFItems.SPANNER.get())
+                .pattern("I I")
+                .pattern(" I ")
+                .pattern(" I ")
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
                 .save(output);
 
         shaped(RecipeCategory.MISC, EFBlocks.TRAY.get())

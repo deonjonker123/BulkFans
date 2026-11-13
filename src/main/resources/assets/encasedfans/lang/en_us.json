@@ -6,6 +6,8 @@
   "block.encasedfans.lava_catalyst": "Lava Catalyst",
   "block.encasedfans.water_catalyst": "Water Catalyst",
 
+  "item.encasedfans.spanner": "Spanner",
+
   "itemGroup.encasedfans": "Encased Fans",
 
   "encasedfans.configuration.title": "Encased Fans Configuration",

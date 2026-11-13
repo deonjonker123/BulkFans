@@ -58,6 +58,7 @@ public final class FanProcessing {
         int ticks = progress.isFor(key.get()) ? progress.ticks() + elapsed : elapsed;
         if (ticks < requiredTicks(stack.getCount())) {
             entity.setData(EFAttachments.PROCESSING_PROGRESS, new ProcessingProgress(key, ticks));
+            entity.setPickUpDelay(elapsed * 2);
             spawnProcessingParticles(level, entity.getX(), entity.getY() + 0.25, entity.getZ());
             return;
         }

@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
@@ -39,6 +40,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
     private static final int EFFECT_REFRESH_BELOW = 10;
     private static final double PARTICLE_SPREAD = 0.8;
     private static final ParticleOptions AIR_PARTICLE = ParticleTypes.CLOUD;
+    private static final int UNLIMITED_ITEM_AGE = -32768;
 
     private float angle;
     private float prevAngle;
@@ -135,7 +137,17 @@ public class EncasedFanBlockEntity extends BlockEntity {
             return;
         }
         Direction facing = state.getValue(EncasedFanBlock.FACING);
-        for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, airflowArea(pos, facing), ItemEntity::isAlive)) {
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, airflowArea(pos, facing), ItemEntity::isAlive);
+        for (ItemEntity item : items) {
+            if (item.getAge() != UNLIMITED_ITEM_AGE) {
+                item.setExtendedLifetime();
+            }
+        }
+        mergeItems(items, pos, facing);
+        for (ItemEntity item : items) {
+            if (!item.isAlive()) {
+                continue;
+            }
             Holder<ProcessingType> type = typeAt(distanceFromFan(pos, facing, item));
             if (type != null) {
                 FanProcessing.tick(level, item, type, interval);
@@ -146,6 +158,37 @@ public class EncasedFanBlockEntity extends BlockEntity {
             cursor.move(facing);
             if (type != null && level.getBlockEntity(cursor) instanceof TrayBlockEntity tray) {
                 tray.process(level, type, interval);
+            }
+        }
+    }
+
+    private static void mergeItems(List<ItemEntity> items, BlockPos pos, Direction facing) {
+        for (int i = 0; i < items.size(); i++) {
+            ItemEntity target = items.get(i);
+            if (!target.isAlive() || target.getAge() == UNLIMITED_ITEM_AGE) {
+                continue;
+            }
+            int cell = (int) distanceFromFan(pos, facing, target);
+            for (int j = i + 1; j < items.size(); j++) {
+                ItemEntity source = items.get(j);
+                if (!source.isAlive() || source.getAge() == UNLIMITED_ITEM_AGE || (int) distanceFromFan(pos, facing, source) != cell) {
+                    continue;
+                }
+                ItemStack targetStack = target.getItem();
+                ItemStack sourceStack = source.getItem();
+                if (!ItemStack.isSameItemSameComponents(targetStack, sourceStack)) {
+                    continue;
+                }
+                int moved = Math.min(targetStack.getMaxStackSize() - targetStack.getCount(), sourceStack.getCount());
+                if (moved <= 0) {
+                    continue;
+                }
+                target.setItem(targetStack.copyWithCount(targetStack.getCount() + moved));
+                if (moved == sourceStack.getCount()) {
+                    source.discard();
+                } else {
+                    source.setItem(sourceStack.copyWithCount(sourceStack.getCount() - moved));
+                }
             }
         }
     }

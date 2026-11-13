@@ -24,6 +24,7 @@ public class EFCreativeTab {
                         output.accept(EFItems.SOUL_FIRE_CATALYST.get());
                         output.accept(EFItems.LAVA_CATALYST.get());
                         output.accept(EFItems.WATER_CATALYST.get());
+                        output.accept(EFItems.SPANNER.get());
                     })
                     .build());
 

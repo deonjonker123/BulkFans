@@ -1,6 +1,7 @@
 package com.misterd.encasedfans.block.custom;
 
 import com.misterd.encasedfans.blockentity.custom.TrayBlockEntity;
+import com.misterd.encasedfans.item.EFItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -42,6 +43,9 @@ public class TrayBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (stack.is(EFItems.SPANNER.get())) {
+            return InteractionResult.PASS;
+        }
         if (stack.isEmpty() || !(level.getBlockEntity(pos) instanceof TrayBlockEntity tray)) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }

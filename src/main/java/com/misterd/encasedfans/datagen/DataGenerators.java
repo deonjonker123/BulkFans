@@ -24,6 +24,7 @@ public class DataGenerators {
         event.createProvider(EFItemTagsProvider::new);
         event.createProvider(EFRecipeProvider.Runner::new);
         event.createProvider(EFDataMapProvider::new);
+        event.createProvider(EFModelProvider::new);
         event.createDatapackRegistryObjects(new RegistrySetBuilder().add(EFProcessingTypes.REGISTRY, EFProcessingTypes::bootstrap));
     }
 }
