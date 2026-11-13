@@ -4,11 +4,12 @@
   "processing_type": "encasedfans:washing",
   "results": [
     {
-      "id": "minecraft:sand"
+      "chance": 0.25,
+      "id": "minecraft:quartz"
     },
     {
       "chance": 0.05,
-      "id": "minecraft:quartz"
+      "id": "minecraft:gold_nugget"
     }
   ]
 }

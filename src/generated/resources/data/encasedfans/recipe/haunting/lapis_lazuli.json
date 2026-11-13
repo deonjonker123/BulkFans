@@ -1,0 +1,15 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:lapis_lazuli",
+  "processing_type": "encasedfans:haunting",
+  "results": [
+    {
+      "chance": 0.75,
+      "id": "minecraft:prismarine_shard"
+    },
+    {
+      "chance": 0.1,
+      "id": "minecraft:prismarine_crystals"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "#c:cobblestones",
+  "processing_type": "encasedfans:haunting",
+  "results": [
+    {
+      "id": "minecraft:blackstone"
+    }
+  ]
+}

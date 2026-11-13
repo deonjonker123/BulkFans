@@ -7,6 +7,7 @@ import com.misterd.encasedfans.processing.ProcessingType;
 import com.misterd.encasedfans.recipe.custom.FanProcessingRecipe;
 import com.misterd.encasedfans.recipe.custom.ProcessingOutput;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -15,14 +16,20 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.Tags;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class EFRecipeProvider extends RecipeProvider {
     protected EFRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
@@ -63,13 +70,27 @@ public class EFRecipeProvider extends RecipeProvider {
         catalyst(EFBlocks.LAVA_CATALYST.get(), Items.LAVA_BUCKET);
         catalyst(EFBlocks.WATER_CATALYST.get(), Items.WATER_BUCKET);
 
-        fan(EFProcessingTypes.WASHING, "gravel", Items.GRAVEL, output(Items.FLINT, 1F), output(Items.IRON_NUGGET, 0.1F));
-        fan(EFProcessingTypes.WASHING, "sand", Items.SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
-        fan(EFProcessingTypes.WASHING, "red_sand", Items.RED_SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
-        fan(EFProcessingTypes.WASHING, "soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F), output(Items.QUARTZ, 0.05F));
-        fan(EFProcessingTypes.WASHING, "soul_soil", Items.SOUL_SOIL, output(Items.RED_SAND, 1F));
-        fan(EFProcessingTypes.WASHING, "crimson_fungus", Items.CRIMSON_FUNGUS, output(Items.RED_MUSHROOM, 1F));
-        fan(EFProcessingTypes.WASHING, "warped_fungus", Items.WARPED_FUNGUS, output(Items.BROWN_MUSHROOM, 1F));
+        fan(EFProcessingTypes.WASHING, "gravel", Items.GRAVEL, output(Items.FLINT, 0.5F), output(Items.IRON_NUGGET, 0.1F));
+        fan(EFProcessingTypes.WASHING, "sand", Items.SAND, output(Items.CLAY_BALL, 1F));
+        fan(EFProcessingTypes.WASHING, "red_sand", Items.RED_SAND, output(Items.GOLD_NUGGET, 0.25F), output(Items.DEAD_BUSH, 0.1F));
+        fan(EFProcessingTypes.WASHING, "soul_sand", Items.SOUL_SAND, output(Items.QUARTZ, 0.25F), output(Items.GOLD_NUGGET, 0.05F));
+        fan(EFProcessingTypes.WASHING, "magma_block", Items.MAGMA_BLOCK, output(Items.OBSIDIAN, 1F));
+        fan(EFProcessingTypes.WASHING, "ice", Items.ICE, output(Items.PACKED_ICE, 1F));
+        Stream<Item> dyedWools = Arrays.stream(DyeColor.values())
+                .filter(color -> color != DyeColor.WHITE)
+                .map(color -> vanillaItem(color, "_wool"));
+        fan(EFProcessingTypes.WASHING, "dyed_wool", Ingredient.of(dyedWools), output(Items.WHITE_WOOL, 1F));
+        for (DyeColor color : DyeColor.values()) {
+            fan(EFProcessingTypes.WASHING, color.getSerializedName() + "_concrete_powder",
+                    vanillaItem(color, "_concrete_powder"), output(vanillaItem(color, "_concrete"), 1F));
+        }
+        Stream<Item> stainedGlass = Arrays.stream(DyeColor.values())
+                .map(color -> vanillaItem(color, "_stained_glass"));
+        fan(EFProcessingTypes.WASHING, "stained_glass", Ingredient.of(stainedGlass), output(Items.GLASS, 1F));
+
+        Stream<Item> stainedGlassPanes = Arrays.stream(DyeColor.values())
+                .map(color -> vanillaItem(color, "_stained_glass_pane"));
+        fan(EFProcessingTypes.WASHING, "stained_glass_pane", Ingredient.of(stainedGlassPanes), output(Items.GLASS_PANE, 1F));
 
         fan(EFProcessingTypes.HAUNTING, "sand", Items.SAND, output(Items.SOUL_SAND, 1F));
         fan(EFProcessingTypes.HAUNTING, "red_sand", Items.RED_SAND, output(Items.SOUL_SOIL, 1F));
@@ -79,6 +100,11 @@ public class EFRecipeProvider extends RecipeProvider {
         fan(EFProcessingTypes.HAUNTING, "campfire", Items.CAMPFIRE, output(Items.SOUL_CAMPFIRE, 1F));
         fan(EFProcessingTypes.HAUNTING, "brown_mushroom", Items.BROWN_MUSHROOM, output(Items.WARPED_FUNGUS, 1F));
         fan(EFProcessingTypes.HAUNTING, "red_mushroom", Items.RED_MUSHROOM, output(Items.CRIMSON_FUNGUS, 1F));
+        fan(EFProcessingTypes.HAUNTING, "lapis_lazuli", Items.LAPIS_LAZULI, output(Items.PRISMARINE_SHARD, 0.75F), output(Items.PRISMARINE_CRYSTALS, 0.1F));
+        fan(EFProcessingTypes.HAUNTING, "cobblestones", Tags.Items.COBBLESTONES, output(Items.BLACKSTONE, 1F));
+        fan(EFProcessingTypes.HAUNTING, "sweet_berries", Items.SWEET_BERRIES, output(Items.GLOW_BERRIES, 1F));
+        fan(EFProcessingTypes.HAUNTING, "ink_sac", Items.INK_SAC, output(Items.GLOW_INK_SAC, 1F));
+        fan(EFProcessingTypes.HAUNTING, "brick", Items.BRICK, output(Items.NETHER_BRICK, 1F));
 
         fan(EFProcessingTypes.BLASTING, "raw_iron_block", Items.RAW_IRON_BLOCK, output(Items.IRON_BLOCK, 1F));
         fan(EFProcessingTypes.BLASTING, "raw_copper_block", Items.RAW_COPPER_BLOCK, output(Items.COPPER_BLOCK, 1F));
@@ -86,8 +112,20 @@ public class EFRecipeProvider extends RecipeProvider {
     }
 
     private void fan(ResourceKey<ProcessingType> type, String name, ItemLike input, ProcessingOutput... results) {
+        fan(type, name, Ingredient.of(input), results);
+    }
+
+    private void fan(ResourceKey<ProcessingType> type, String name, TagKey<Item> input, ProcessingOutput... results) {
+        fan(type, name, tag(input), results);
+    }
+
+    private void fan(ResourceKey<ProcessingType> type, String name, Ingredient input, ProcessingOutput... results) {
         String path = type.identifier().getPath() + "/" + name;
-        output.accept(recipeKey(path), new FanProcessingRecipe(type, Ingredient.of(input), List.of(results)), null);
+        output.accept(recipeKey(path), new FanProcessingRecipe(type, input, List.of(results)), null);
+    }
+
+    private static Item vanillaItem(DyeColor color, String suffix) {
+        return BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(color.getSerializedName() + suffix));
     }
 
     private static ProcessingOutput output(ItemLike item, float chance) {

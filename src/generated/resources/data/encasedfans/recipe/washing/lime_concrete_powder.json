@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:lime_concrete_powder",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:lime_concrete"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:yellow_concrete_powder",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:yellow_concrete"
+    }
+  ]
+}

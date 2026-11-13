@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:magma_block",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:obsidian"
+    }
+  ]
+}

@@ -4,6 +4,7 @@
   "processing_type": "encasedfans:washing",
   "results": [
     {
+      "chance": 0.5,
       "id": "minecraft:flint"
     },
     {

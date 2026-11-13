@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:white_concrete_powder",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:white_concrete"
+    }
+  ]
+}
