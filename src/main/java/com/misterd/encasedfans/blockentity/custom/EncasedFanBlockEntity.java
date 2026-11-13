@@ -2,6 +2,7 @@ package com.misterd.encasedfans.blockentity.custom;
 
 import com.misterd.encasedfans.block.custom.EncasedFanBlock;
 import com.misterd.encasedfans.blockentity.EFBlockEntities;
+import com.misterd.encasedfans.config.EFConfig;
 import com.misterd.encasedfans.processing.FanProcessing;
 import com.misterd.encasedfans.processing.FanProcessingType;
 import net.minecraft.core.BlockPos;
@@ -25,17 +26,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class EncasedFanBlockEntity extends BlockEntity {
-    private static final float SPEED_EASING = 0.2F;
-    private static final int AIRFLOW_REFRESH_INTERVAL = 10;
-    private static final double MAX_ACCELERATION = 0.05;
-    private static final double MAX_FLOW_SPEED = 0.1;
-    private static final int IGNITE_TICKS = 120;
-    private static final int DARKNESS_TICKS = 60;
     private static final int DARKNESS_REFRESH_BELOW = 10;
-    private static final int BLOCKS_PER_PARTICLE = 4;
-    private static final float PARTICLE_CHANCE = 0.5F;
     private static final double PARTICLE_SPREAD = 0.8;
-    private static final int PROCESS_INTERVAL = 5;
 
     private float angle;
     private float prevAngle;
@@ -60,8 +52,9 @@ public class EncasedFanBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, EncasedFanBlockEntity fan) {
         fan.tickAirflow(level, pos, state);
         if (--fan.processTimer <= 0 && level instanceof ServerLevel serverLevel) {
-            fan.processTimer = PROCESS_INTERVAL;
-            fan.processItems(serverLevel, pos, state);
+            int interval = EFConfig.SERVER.processInterval.get();
+            fan.processTimer = interval;
+            fan.processItems(serverLevel, pos, state, interval);
         }
     }
 
@@ -70,7 +63,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
         if (state.getValue(EncasedFanBlock.PULL)) {
             target = -target;
         }
-        speed += (target - speed) * SPEED_EASING;
+        speed += (target - speed) * EFConfig.CLIENT.spinEasing.get().floatValue();
         if (target == 0 && Math.abs(speed) < 0.05F) {
             speed = 0;
         }
@@ -86,7 +79,10 @@ public class EncasedFanBlockEntity extends BlockEntity {
     }
 
     private static float targetSpeed(int power) {
-        return power <= 0 ? 0 : 4 + power * 2;
+        if (power <= 0) {
+            return 0;
+        }
+        return (float) (EFConfig.CLIENT.spinBaseSpeed.get() + EFConfig.CLIENT.spinSpeedPerPower.get() * power);
     }
 
     public float getAngle(float partialTick) {
@@ -122,13 +118,13 @@ public class EncasedFanBlockEntity extends BlockEntity {
         }
     }
 
-    private void processItems(ServerLevel level, BlockPos pos, BlockState state) {
+    private void processItems(ServerLevel level, BlockPos pos, BlockState state, int interval) {
         if (airflow.length == 0) {
             return;
         }
         Direction facing = state.getValue(EncasedFanBlock.FACING);
         for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, airflowArea(pos, facing), ItemEntity::isAlive)) {
-            FanProcessing.tick(level, item, typeAt(distanceFromFan(pos, facing, item)), PROCESS_INTERVAL);
+            FanProcessing.tick(level, item, typeAt(distanceFromFan(pos, facing, item)), interval);
         }
     }
 
@@ -144,10 +140,11 @@ public class EncasedFanBlockEntity extends BlockEntity {
         Direction facing = state.getValue(EncasedFanBlock.FACING);
         Vec3 axis = facing.getUnitVec3();
         Vec3 flow = state.getValue(EncasedFanBlock.PULL) ? axis.reverse() : axis;
-        int attempts = Math.max(1, airflow.length / BLOCKS_PER_PARTICLE);
+        float chance = EFConfig.CLIENT.particleChance.get().floatValue();
+        int attempts = Math.max(1, airflow.length / EFConfig.CLIENT.blocksPerParticle.get());
 
         for (int i = 0; i < attempts; i++) {
-            if (random.nextFloat() > PARTICLE_CHANCE) {
+            if (random.nextFloat() >= chance) {
                 continue;
             }
             double distance = random.nextDouble() * airflow.length;
@@ -161,7 +158,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
 
     private void refreshAirflow(Level level, BlockPos pos, BlockState state) {
         airflowState = state;
-        airflowRefreshTimer = AIRFLOW_REFRESH_INTERVAL;
+        airflowRefreshTimer = EFConfig.SERVER.airflowRefreshInterval.get();
         airflowRange = EncasedFanBlock.rangeFor(state.getValue(EncasedFanBlock.POWER));
         Direction facing = state.getValue(EncasedFanBlock.FACING);
 
@@ -210,12 +207,12 @@ public class EncasedFanBlockEntity extends BlockEntity {
     }
 
     private void pushEntity(Entity entity, Direction facing, boolean pull, double distance) {
-        double falloff = 1 - 0.5 * Math.min(distance / airflowRange, 1);
+        double falloff = 1 - EFConfig.SERVER.pushFalloff.get() * Math.min(distance / airflowRange, 1);
         Vec3 direction = pull ? facing.getUnitVec3().reverse() : facing.getUnitVec3();
-        double cap = MAX_FLOW_SPEED * falloff;
+        double cap = EFConfig.SERVER.maxFlowSpeed.get() * falloff;
         double along = entity.getDeltaMovement().dot(direction);
         if (along < cap) {
-            entity.push(direction.scale(Math.min(MAX_ACCELERATION * falloff, cap - along)));
+            entity.push(direction.scale(Math.min(EFConfig.SERVER.pushAcceleration.get() * falloff, cap - along)));
         }
         if (facing == Direction.UP && !pull) {
             entity.resetFallDistance();
@@ -227,7 +224,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
             return;
         }
         if (type.ignitesEntities() && !entity.fireImmune()) {
-            entity.igniteForTicks(IGNITE_TICKS);
+            entity.igniteForTicks(EFConfig.SERVER.igniteTicks.get());
         }
         if (type.extinguishesEntities() && entity.isOnFire()) {
             entity.clearFire();
@@ -237,7 +234,7 @@ public class EncasedFanBlockEntity extends BlockEntity {
         if (type.darkensEntities() && entity instanceof LivingEntity living) {
             MobEffectInstance darkness = living.getEffect(MobEffects.DARKNESS);
             if (darkness == null || darkness.getDuration() < DARKNESS_REFRESH_BELOW) {
-                living.addEffect(new MobEffectInstance(MobEffects.DARKNESS, DARKNESS_TICKS, 0, false, false));
+                living.addEffect(new MobEffectInstance(MobEffects.DARKNESS, EFConfig.SERVER.darknessTicks.get(), 0, false, false));
             }
         }
     }

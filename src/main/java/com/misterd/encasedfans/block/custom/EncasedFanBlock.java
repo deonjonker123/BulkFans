@@ -2,6 +2,7 @@ package com.misterd.encasedfans.block.custom;
 
 import com.misterd.encasedfans.blockentity.EFBlockEntities;
 import com.misterd.encasedfans.blockentity.custom.EncasedFanBlockEntity;
+import com.misterd.encasedfans.config.EFConfig;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -96,7 +97,7 @@ public class EncasedFanBlock extends BaseEntityBlock {
     }
 
     public static int rangeFor(int power) {
-        return power <= 0 ? 0 : Math.max(3, power);
+        return power <= 0 ? 0 : Math.max(EFConfig.SERVER.minimumRange.get(), power);
     }
 
     @Override

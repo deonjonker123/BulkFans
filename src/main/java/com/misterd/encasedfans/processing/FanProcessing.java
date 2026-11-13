@@ -1,6 +1,7 @@
 package com.misterd.encasedfans.processing;
 
 import com.misterd.encasedfans.attachment.EFAttachments;
+import com.misterd.encasedfans.config.EFConfig;
 import com.misterd.encasedfans.recipe.EFRecipes;
 import com.misterd.encasedfans.recipe.custom.FanProcessingRecipe;
 import com.misterd.encasedfans.util.EFTags;
@@ -40,7 +41,8 @@ public final class FanProcessing {
     }
 
     public static int requiredTicks(int count) {
-        return TICKS_PER_BATCH * ((count + BATCH_SIZE - 1) / BATCH_SIZE);
+        int batchSize = EFConfig.SERVER.batchSize.get();
+        return EFConfig.SERVER.ticksPerBatch.get() * ((count + batchSize - 1) / batchSize);
     }
 
     public static void tick(ServerLevel level, ItemEntity entity, FanProcessingType type, int elapsed) {
@@ -57,7 +59,10 @@ public final class FanProcessing {
         int ticks = progress.type() == type ? progress.ticks() + elapsed : elapsed;
         if (ticks < requiredTicks(stack.getCount())) {
             entity.setData(EFAttachments.PROCESSING_PROGRESS, new ProcessingProgress(type, ticks));
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, entity.getX(), entity.getY() + 0.25, entity.getZ(), 3, 0.1, 0.05, 0.1, 0.0);
+            int particles = EFConfig.SERVER.processingParticles.get();
+            if (particles > 0) {
+                level.sendParticles(ParticleTypes.LARGE_SMOKE, entity.getX(), entity.getY() + 0.25, entity.getZ(), particles, 0.1, 0.05, 0.1, 0.0);
+            }
             return;
         }
 

@@ -1,4 +1,36 @@
 {
   "block.encasedfans.fan": "Encased Fan",
-  "itemGroup.encasedfans": "Encased Fans"
+  "itemGroup.encasedfans": "Encased Fans",
+
+  "encasedfans.configuration.title": "Encased Fans Configuration",
+  "encasedfans.configuration.section.encasedfans.server.toml": "Server Settings",
+  "encasedfans.configuration.section.encasedfans.server.toml.title": "Encased Fans Server Settings",
+  "encasedfans.configuration.section.encasedfans.client.toml": "Client Settings",
+  "encasedfans.configuration.section.encasedfans.client.toml.title": "Encased Fans Client Settings",
+
+  "encasedfans.configuration.processing": "Processing",
+  "encasedfans.configuration.ticksPerBatch": "Ticks Per Batch",
+  "encasedfans.configuration.batchSize": "Batch Size",
+  "encasedfans.configuration.processInterval": "Process Interval",
+  "encasedfans.configuration.processingParticles": "Processing Particles",
+
+  "encasedfans.configuration.airflow": "Airflow",
+  "encasedfans.configuration.minimumRange": "Minimum Range",
+  "encasedfans.configuration.airflowRefreshInterval": "Airflow Refresh Interval",
+  "encasedfans.configuration.pushAcceleration": "Push Acceleration",
+  "encasedfans.configuration.maxFlowSpeed": "Max Flow Speed",
+  "encasedfans.configuration.pushFalloff": "Push Falloff",
+
+  "encasedfans.configuration.effects": "Entity Effects",
+  "encasedfans.configuration.igniteTicks": "Ignite Duration",
+  "encasedfans.configuration.darknessTicks": "Darkness Duration",
+
+  "encasedfans.configuration.propeller": "Propeller",
+  "encasedfans.configuration.spinBaseSpeed": "Base Spin Speed",
+  "encasedfans.configuration.spinSpeedPerPower": "Spin Speed Per Power",
+  "encasedfans.configuration.spinEasing": "Spin Easing",
+
+  "encasedfans.configuration.particles": "Airflow Particles",
+  "encasedfans.configuration.particleChance": "Particle Chance",
+  "encasedfans.configuration.blocksPerParticle": "Blocks Per Particle"
 }
