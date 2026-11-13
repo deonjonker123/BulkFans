@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:crimson_fungus",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:red_mushroom"
+    }
+  ]
+}

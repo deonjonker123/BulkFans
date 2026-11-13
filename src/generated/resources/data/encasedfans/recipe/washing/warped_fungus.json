@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:warped_fungus",
+  "processing_type": "encasedfans:washing",
+  "results": [
+    {
+      "id": "minecraft:brown_mushroom"
+    }
+  ]
+}
