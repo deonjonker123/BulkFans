@@ -1,0 +1,16 @@
+{
+	"variants": {
+		"facing=north,pull=false": { "model": "bulkfans:block/fan_casing" },
+		"facing=east,pull=false": { "model": "bulkfans:block/fan_casing", "y": 90 },
+		"facing=south,pull=false": { "model": "bulkfans:block/fan_casing", "y": 180 },
+		"facing=west,pull=false": { "model": "bulkfans:block/fan_casing", "y": 270 },
+		"facing=up,pull=false": { "model": "bulkfans:block/fan_casing", "x": 270 },
+		"facing=down,pull=false": { "model": "bulkfans:block/fan_casing", "x": 90 },
+		"facing=north,pull=true": { "model": "bulkfans:block/fan_casing_pull" },
+		"facing=east,pull=true": { "model": "bulkfans:block/fan_casing_pull", "y": 90 },
+		"facing=south,pull=true": { "model": "bulkfans:block/fan_casing_pull", "y": 180 },
+		"facing=west,pull=true": { "model": "bulkfans:block/fan_casing_pull", "y": 270 },
+		"facing=up,pull=true": { "model": "bulkfans:block/fan_casing_pull", "x": 270 },
+		"facing=down,pull=true": { "model": "bulkfans:block/fan_casing_pull", "x": 90 }
+	}
+}

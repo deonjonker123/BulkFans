@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:raw_iron_block",
+  "processing_type": "bulkfans:blasting",
+  "results": [
+    {
+      "id": "minecraft:iron_block"
+    }
+  ]
+}

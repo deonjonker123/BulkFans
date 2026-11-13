@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:blue_concrete_powder",
+  "processing_type": "bulkfans:washing",
+  "results": [
+    {
+      "id": "minecraft:blue_concrete"
+    }
+  ]
+}

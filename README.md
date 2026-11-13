@@ -1,12 +1,12 @@
-# Encased Fans
+# Bulk Fans
 
 Bulk fan processing for NeoForge. Inspired by the Create Encased Fan.
 
-Create isn't on 26.1, and I just wanted the fans. So this is that: drop items in front of a fan, blow air through some fire or water, and they get processed in bulk.
+I just wanted the fans from Create. This is that: drop items in front of a fan, blow air through some fire or water, and they get processed in bulk.
 
 ## How it works
 
-Put an **Encased Fan** down and give it a redstone signal. The signal strength sets how far it blows, not how fast it processes items, from 3 blocks up to 15.
+Put an **Industrial Fan** down and give it a redstone signal. The signal strength sets how far it blows, not how fast it processes items, from 3 blocks up to 15.
 
 Smoking and blasting use the normal smoker, blast furnace and furnace recipes. Blasting skips food, so your steak doesn't turn into charcoal. Washing and haunting have their own recipes, and they also oxidize or clean copper one stage at a time.
 
@@ -44,8 +44,8 @@ Pretty much everything is data, so you can add your own recipes, catalysts, and 
 
 ```json
 {
-  "type": "encasedfans:fan_processing",
-  "processing_type": "encasedfans:washing",
+  "type": "bulkfans:fan_processing",
+  "processing_type": "bulkfans:washing",
   "ingredient": "minecraft:gravel",
   "results": [
     { "id": "minecraft:flint" },
@@ -54,17 +54,17 @@ Pretty much everything is data, so you can add your own recipes, catalysts, and 
 }
 ```
 
-**Catalyst** – `data/encasedfans/data_maps/block/fan_catalysts.json` (or `fluid/` for fluids)
+**Catalyst** – `data/bulkfans/data_maps/block/fan_catalysts.json` (or `fluid/` for fluids)
 
 ```json
 {
   "values": {
-    "minecraft:magma_block": { "processing_type": "encasedfans:blasting" }
+    "minecraft:magma_block": { "processing_type": "bulkfans:blasting" }
   }
 }
 ```
 
-**Processing type** – `data/<namespace>/encasedfans/processing_type/<name>.json`
+**Processing type** – `data/<namespace>/bulkfans/processing_type/<name>.json`
 
 ```json
 {
@@ -76,7 +76,7 @@ Pretty much everything is data, so you can add your own recipes, catalysts, and 
 
 Other fields: `vanilla_recipes` (`smoking` or `blasting`), `ignite_entities`, `extinguish_entities`, and `effects`.
 
-To keep something out of blasting, or force it in, use the item tags `encasedfans:blasting_exclude` and `encasedfans:blasting_include`.
+To keep something out of blasting, or force it in, use the item tags `bulkfans:blasting_exclude` and `bulkfans:blasting_include`.
 
 ## Config
 

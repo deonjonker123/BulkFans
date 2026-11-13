@@ -1,0 +1,10 @@
+{
+  "values": {
+    "minecraft:lava": {
+      "processing_type": "bulkfans:blasting"
+    },
+    "minecraft:water": {
+      "processing_type": "bulkfans:washing"
+    }
+  }
+}

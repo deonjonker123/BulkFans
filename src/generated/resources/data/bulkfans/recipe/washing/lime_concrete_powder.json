@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:lime_concrete_powder",
+  "processing_type": "bulkfans:washing",
+  "results": [
+    {
+      "id": "minecraft:lime_concrete"
+    }
+  ]
+}

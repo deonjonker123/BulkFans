@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:sweet_berries",
+  "processing_type": "bulkfans:haunting",
+  "results": [
+    {
+      "id": "minecraft:glow_berries"
+    }
+  ]
+}

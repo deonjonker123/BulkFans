@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:raw_gold_block",
+  "processing_type": "bulkfans:blasting",
+  "results": [
+    {
+      "id": "minecraft:gold_block"
+    }
+  ]
+}

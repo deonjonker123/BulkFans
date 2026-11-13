@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:potato",
+  "processing_type": "bulkfans:haunting",
+  "results": [
+    {
+      "id": "minecraft:poisonous_potato"
+    }
+  ]
+}

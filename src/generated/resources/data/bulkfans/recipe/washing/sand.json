@@ -1,0 +1,10 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:sand",
+  "processing_type": "bulkfans:washing",
+  "results": [
+    {
+      "id": "minecraft:clay_ball"
+    }
+  ]
+}

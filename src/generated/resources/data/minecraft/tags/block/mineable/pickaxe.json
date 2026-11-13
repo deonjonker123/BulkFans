@@ -1,10 +1,10 @@
 {
   "values": [
-    "encasedfans:fan",
-    "encasedfans:tray",
-    "encasedfans:fire_catalyst",
-    "encasedfans:soul_fire_catalyst",
-    "encasedfans:lava_catalyst",
-    "encasedfans:water_catalyst"
+    "bulkfans:industrial_fan",
+    "bulkfans:tray",
+    "bulkfans:fire_catalyst",
+    "bulkfans:soul_fire_catalyst",
+    "bulkfans:lava_catalyst",
+    "bulkfans:water_catalyst"
   ]
 }

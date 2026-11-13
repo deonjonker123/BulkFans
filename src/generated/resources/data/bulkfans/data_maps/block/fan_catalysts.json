@@ -1,0 +1,34 @@
+{
+  "values": {
+    "bulkfans:fire_catalyst": {
+      "processing_type": "bulkfans:smoking"
+    },
+    "bulkfans:lava_catalyst": {
+      "processing_type": "bulkfans:blasting"
+    },
+    "bulkfans:soul_fire_catalyst": {
+      "processing_type": "bulkfans:haunting"
+    },
+    "bulkfans:water_catalyst": {
+      "processing_type": "bulkfans:washing"
+    },
+    "minecraft:campfire": {
+      "processing_type": "bulkfans:smoking",
+      "state": {
+        "lit": "true"
+      }
+    },
+    "minecraft:fire": {
+      "processing_type": "bulkfans:smoking"
+    },
+    "minecraft:soul_campfire": {
+      "processing_type": "bulkfans:haunting",
+      "state": {
+        "lit": "true"
+      }
+    },
+    "minecraft:soul_fire": {
+      "processing_type": "bulkfans:haunting"
+    }
+  }
+}

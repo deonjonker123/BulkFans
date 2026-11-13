@@ -1,0 +1,15 @@
+{
+  "type": "bulkfans:fan_processing",
+  "ingredient": "minecraft:soul_sand",
+  "processing_type": "bulkfans:washing",
+  "results": [
+    {
+      "chance": 0.25,
+      "id": "minecraft:quartz"
+    },
+    {
+      "chance": 0.05,
+      "id": "minecraft:gold_nugget"
+    }
+  ]
+}

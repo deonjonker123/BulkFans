@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:iron_bars",
+    "X": "minecraft:water_bucket"
+  },
+  "pattern": [
+    "BBB",
+    "BXB",
+    "BBB"
+  ],
+  "result": {
+    "id": "bulkfans:water_catalyst"
+  }
+}
