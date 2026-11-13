@@ -1,6 +1,15 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "encasedfans:block/fan_casing"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "encasedfans:block/fan_casing"
+      },
+      {
+        "type": "minecraft:model",
+        "model": "encasedfans:item/fan_propeller"
+      }
+    ]
   }
 }

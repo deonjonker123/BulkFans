@@ -1,10 +1,7 @@
 package com.misterd.encasedfans.datagen;
 
 import com.misterd.encasedfans.EncasedFans;
-import com.misterd.encasedfans.datagen.custom.EFBlockTagsProvider;
-import com.misterd.encasedfans.datagen.custom.EFDataMapProvider;
-import com.misterd.encasedfans.datagen.custom.EFLootTableProvider;
-import com.misterd.encasedfans.datagen.custom.EFRecipeProvider;
+import com.misterd.encasedfans.datagen.custom.*;
 import com.misterd.encasedfans.processing.EFProcessingTypes;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.loot.LootTableProvider;
@@ -24,9 +21,9 @@ public class DataGenerators {
                 List.of(new LootTableProvider.SubProviderEntry(EFLootTableProvider::new, LootContextParamSets.BLOCK)),
                 lookupProvider));
         event.createProvider(EFBlockTagsProvider::new);
+        event.createProvider(EFItemTagsProvider::new);
         event.createProvider(EFRecipeProvider.Runner::new);
         event.createProvider(EFDataMapProvider::new);
-        event.createDatapackRegistryObjects(new RegistrySetBuilder()
-                .add(EFProcessingTypes.REGISTRY, EFProcessingTypes::bootstrap));
+        event.createDatapackRegistryObjects(new RegistrySetBuilder().add(EFProcessingTypes.REGISTRY, EFProcessingTypes::bootstrap));
     }
 }
