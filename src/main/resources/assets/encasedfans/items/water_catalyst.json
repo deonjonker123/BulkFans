@@ -1,6 +1,12 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "encasedfans:block/water_catalyst"
+    "model": "encasedfans:block/water_catalyst",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 4159204
+      }
+    ]
   }
 }
