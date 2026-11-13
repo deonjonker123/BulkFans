@@ -20,7 +20,7 @@ Airflow stops at solid blocks. Slabs, fences, open trapdoors and the like let it
 
 ## Catalysts
 
-If you don't want lava pouring everywhere, there are caged versions: **Fire**, **Soul Fire**, **Lava** and **Water Catalysts**. They work exactly like the real thing.
+If you don't want lava or water all over the place, there are caged versions: **Fire**, **Soul Fire**, **Lava** and **Water Catalysts**.
 
 ## Tray
 
@@ -30,11 +30,7 @@ Put a row of trays in front of a fan and they all get processed. The air goes th
 
 ## Spanner
 
-Right-click a fan to turn it. Sneak + right-click a fan, tray or catalyst to pick it straight up.
-
-## JEI
-
-Every processing type gets its own JEI tab, including anything added by datapacks.
+Right-click a fan to rotate it. Sneak + right-click a fan, tray or catalyst to pick it straight up.
 
 ## Datapacks
 
