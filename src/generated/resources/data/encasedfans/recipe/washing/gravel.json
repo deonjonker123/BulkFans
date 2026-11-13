@@ -1,6 +1,7 @@
 {
-  "type": "encasedfans:washing",
+  "type": "encasedfans:fan_processing",
   "ingredient": "minecraft:gravel",
+  "processing_type": "encasedfans:washing",
   "results": [
     {
       "id": "minecraft:flint"

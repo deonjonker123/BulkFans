@@ -1,12 +1,13 @@
 {
-  "type": "encasedfans:washing",
+  "type": "encasedfans:fan_processing",
   "ingredient": "minecraft:soul_sand",
+  "processing_type": "encasedfans:washing",
   "results": [
     {
       "id": "minecraft:sand"
     },
     {
-      "chance": 0.1,
+      "chance": 0.05,
       "id": "minecraft:quartz"
     }
   ]

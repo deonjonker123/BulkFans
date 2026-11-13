@@ -23,7 +23,7 @@
 
   "encasedfans.configuration.effects": "Entity Effects",
   "encasedfans.configuration.igniteTicks": "Ignite Duration",
-  "encasedfans.configuration.darknessTicks": "Darkness Duration",
+  "encasedfans.configuration.effectTicks": "Effect Duration",
 
   "encasedfans.configuration.propeller": "Propeller",
   "encasedfans.configuration.spinBaseSpeed": "Base Spin Speed",

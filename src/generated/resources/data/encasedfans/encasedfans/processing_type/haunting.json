@@ -1,0 +1,11 @@
+{
+  "copper_transform": "oxidize",
+  "effects": [
+    {
+      "id": "minecraft:darkness"
+    }
+  ],
+  "particle": {
+    "type": "minecraft:soul_fire_flame"
+  }
+}

@@ -3,7 +3,7 @@
   "category": "redstone",
   "key": {
     "B": "minecraft:iron_bars",
-    "I": "minecraft:iron_ingot",
+    "I": "minecraft:copper_block",
     "R": "minecraft:redstone"
   },
   "pattern": [

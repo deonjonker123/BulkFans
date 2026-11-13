@@ -1,6 +1,7 @@
 {
-  "type": "encasedfans:haunting",
+  "type": "encasedfans:fan_processing",
   "ingredient": "minecraft:sand",
+  "processing_type": "encasedfans:haunting",
   "results": [
     {
       "id": "minecraft:soul_sand"

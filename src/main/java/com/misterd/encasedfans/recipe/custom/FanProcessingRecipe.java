@@ -1,11 +1,14 @@
 package com.misterd.encasedfans.recipe.custom;
 
+import com.misterd.encasedfans.processing.EFProcessingTypes;
+import com.misterd.encasedfans.processing.ProcessingType;
 import com.misterd.encasedfans.recipe.EFRecipes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -14,20 +17,38 @@ import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
-public abstract class FanProcessingRecipe implements Recipe<SingleRecipeInput> {
+public class FanProcessingRecipe implements Recipe<SingleRecipeInput> {
+    public static final MapCodec<FanProcessingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ResourceKey.codec(EFProcessingTypes.REGISTRY).fieldOf("processing_type").forGetter(FanProcessingRecipe::processingType),
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(FanProcessingRecipe::ingredient),
+            ExtraCodecs.nonEmptyList(ProcessingOutput.CODEC.listOf()).fieldOf("results").forGetter(FanProcessingRecipe::results)
+    ).apply(instance, FanProcessingRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FanProcessingRecipe> STREAM_CODEC = StreamCodec.composite(
+            ResourceKey.streamCodec(EFProcessingTypes.REGISTRY), FanProcessingRecipe::processingType,
+            Ingredient.CONTENTS_STREAM_CODEC, FanProcessingRecipe::ingredient,
+            ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), FanProcessingRecipe::results,
+            FanProcessingRecipe::new);
+
+    private final ResourceKey<ProcessingType> processingType;
     private final Ingredient ingredient;
     private final List<ProcessingOutput> results;
 
-    protected FanProcessingRecipe(Ingredient ingredient, List<ProcessingOutput> results) {
+    public FanProcessingRecipe(ResourceKey<ProcessingType> processingType, Ingredient ingredient, List<ProcessingOutput> results) {
+        this.processingType = processingType;
         this.ingredient = ingredient;
         this.results = results;
+    }
+
+    public ResourceKey<ProcessingType> processingType() {
+        return processingType;
     }
 
     public Ingredient ingredient() {
@@ -83,6 +104,16 @@ public abstract class FanProcessingRecipe implements Recipe<SingleRecipeInput> {
     }
 
     @Override
+    public RecipeSerializer<FanProcessingRecipe> getSerializer() {
+        return EFRecipes.FAN_PROCESSING_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<FanProcessingRecipe> getType() {
+        return EFRecipes.FAN_PROCESSING_TYPE.get();
+    }
+
+    @Override
     public PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }
@@ -90,17 +121,5 @@ public abstract class FanProcessingRecipe implements Recipe<SingleRecipeInput> {
     @Override
     public RecipeBookCategory recipeBookCategory() {
         return EFRecipes.FAN_PROCESSING_CATEGORY.get();
-    }
-
-    public static <T extends FanProcessingRecipe> RecipeSerializer<T> serializer(BiFunction<Ingredient, List<ProcessingOutput>, T> factory) {
-        MapCodec<T> codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                Ingredient.CODEC.fieldOf("ingredient").forGetter(FanProcessingRecipe::ingredient),
-                ExtraCodecs.nonEmptyList(ProcessingOutput.CODEC.listOf()).fieldOf("results").forGetter(FanProcessingRecipe::results)
-        ).apply(instance, factory));
-        StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC, FanProcessingRecipe::ingredient,
-                ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), FanProcessingRecipe::results,
-                factory::apply);
-        return new RecipeSerializer<>(codec, streamCodec);
     }
 }

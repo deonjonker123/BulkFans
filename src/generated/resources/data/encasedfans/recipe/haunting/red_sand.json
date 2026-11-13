@@ -1,0 +1,10 @@
+{
+  "type": "encasedfans:fan_processing",
+  "ingredient": "minecraft:red_sand",
+  "processing_type": "encasedfans:haunting",
+  "results": [
+    {
+      "id": "minecraft:soul_soil"
+    }
+  ]
+}

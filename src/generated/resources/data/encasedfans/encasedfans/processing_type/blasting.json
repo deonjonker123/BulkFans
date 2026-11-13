@@ -1,0 +1,7 @@
+{
+  "ignite_entities": true,
+  "particle": {
+    "type": "minecraft:small_flame"
+  },
+  "vanilla_recipes": "blasting"
+}

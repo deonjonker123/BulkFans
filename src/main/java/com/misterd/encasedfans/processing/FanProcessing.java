@@ -5,7 +5,9 @@ import com.misterd.encasedfans.config.EFConfig;
 import com.misterd.encasedfans.recipe.EFRecipes;
 import com.misterd.encasedfans.recipe.custom.FanProcessingRecipe;
 import com.misterd.encasedfans.util.EFTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
@@ -18,10 +20,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.DataMapHooks;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +30,9 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class FanProcessing {
-    private static final int TICKS_PER_BATCH = 100;
-    private static final int BATCH_SIZE = 16;
-
     private static RecipeManager cachedRecipes;
-    private static final Map<FanProcessingType, Map<Item, Boolean>> PROCESSABLE = new EnumMap<>(FanProcessingType.class);
+    private static final Map<ResourceKey<ProcessingType>, List<FanProcessingRecipe>> RECIPES = new HashMap<>();
+    private static final Map<ResourceKey<ProcessingType>, Map<Item, Boolean>> PROCESSABLE = new HashMap<>();
     private static final Set<Item> SMOKABLE = new HashSet<>();
 
     private FanProcessing() {
@@ -45,8 +43,9 @@ public final class FanProcessing {
         return EFConfig.SERVER.ticksPerBatch.get() * ((count + batchSize - 1) / batchSize);
     }
 
-    public static void tick(ServerLevel level, ItemEntity entity, FanProcessingType type, int elapsed) {
-        if (type == FanProcessingType.NONE) {
+    public static void tick(ServerLevel level, ItemEntity entity, Holder<ProcessingType> type, int elapsed) {
+        Optional<ResourceKey<ProcessingType>> key = type.unwrapKey();
+        if (key.isEmpty()) {
             return;
         }
         ItemStack stack = entity.getItem();
@@ -56,9 +55,9 @@ public final class FanProcessing {
         }
 
         ProcessingProgress progress = entity.getData(EFAttachments.PROCESSING_PROGRESS);
-        int ticks = progress.type() == type ? progress.ticks() + elapsed : elapsed;
+        int ticks = progress.isFor(key.get()) ? progress.ticks() + elapsed : elapsed;
         if (ticks < requiredTicks(stack.getCount())) {
-            entity.setData(EFAttachments.PROCESSING_PROGRESS, new ProcessingProgress(type, ticks));
+            entity.setData(EFAttachments.PROCESSING_PROGRESS, new ProcessingProgress(key, ticks));
             int particles = EFConfig.SERVER.processingParticles.get();
             if (particles > 0) {
                 level.sendParticles(ParticleTypes.LARGE_SMOKE, entity.getX(), entity.getY() + 0.25, entity.getZ(), particles, 0.1, 0.05, 0.1, 0.0);
@@ -80,41 +79,56 @@ public final class FanProcessing {
         }
     }
 
-    public static boolean canProcess(ServerLevel level, ItemStack stack, FanProcessingType type) {
+    public static boolean canProcess(ServerLevel level, ItemStack stack, Holder<ProcessingType> type) {
+        Optional<ResourceKey<ProcessingType>> key = type.unwrapKey();
+        if (key.isEmpty()) {
+            return false;
+        }
         refreshCache(level);
-        return PROCESSABLE.computeIfAbsent(type, key -> new HashMap<>())
-                .computeIfAbsent(stack.getItem(), item -> hasResult(level, stack, type));
+        return PROCESSABLE.computeIfAbsent(key.get(), k -> new HashMap<>())
+                .computeIfAbsent(stack.getItem(), item -> hasResult(level, stack, key.get(), type.value()));
     }
 
-    private static boolean hasResult(ServerLevel level, ItemStack stack, FanProcessingType type) {
-        return switch (type) {
-            case NONE -> false;
-            case SMOKING -> fanRecipe(level, EFRecipes.SMOKING_TYPE.get(), stack).isPresent() || cookingRecipe(level, RecipeType.SMOKING, stack).isPresent();
-            case BLASTING -> fanRecipe(level, EFRecipes.BLASTING_TYPE.get(), stack).isPresent() || blastingRecipe(level, stack).isPresent();
-            case WASHING -> fanRecipe(level, EFRecipes.WASHING_TYPE.get(), stack).isPresent() || !copperStage(stack, false).isEmpty();
-            case HAUNTING -> fanRecipe(level, EFRecipes.HAUNTING_TYPE.get(), stack).isPresent() || !copperStage(stack, true).isEmpty();
+    private static boolean hasResult(ServerLevel level, ItemStack stack, ResourceKey<ProcessingType> key, ProcessingType type) {
+        return fanRecipe(level, key, stack).isPresent()
+                || cookingRecipe(level, type, stack).isPresent()
+                || !copperStage(stack, type).isEmpty();
+    }
+
+    private static List<ItemStack> process(ServerLevel level, ItemStack stack, Holder<ProcessingType> type) {
+        Optional<FanProcessingRecipe> recipe = type.unwrapKey().flatMap(key -> fanRecipe(level, key, stack));
+        if (recipe.isPresent()) {
+            return recipe.get().rollResults(stack.getCount(), level.getRandom());
+        }
+        Optional<? extends AbstractCookingRecipe> cooking = cookingRecipe(level, type.value(), stack);
+        if (cooking.isPresent()) {
+            return cook(cooking.get(), stack);
+        }
+        ItemStack copper = copperStage(stack, type.value());
+        return copper.isEmpty() ? List.of() : List.of(copper);
+    }
+
+    private static Optional<FanProcessingRecipe> fanRecipe(ServerLevel level, ResourceKey<ProcessingType> key, ItemStack stack) {
+        SingleRecipeInput input = new SingleRecipeInput(stack);
+        for (FanProcessingRecipe recipe : RECIPES.getOrDefault(key, List.of())) {
+            if (recipe.matches(input, level)) {
+                return Optional.of(recipe);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<? extends AbstractCookingRecipe> cookingRecipe(ServerLevel level, ProcessingType type, ItemStack stack) {
+        if (type.cookingFallback().isEmpty()) {
+            return Optional.empty();
+        }
+        return switch (type.cookingFallback().get()) {
+            case SMOKING -> vanillaRecipe(level, RecipeType.SMOKING, stack);
+            case BLASTING -> blastingRecipe(level, stack);
         };
     }
 
-    private static List<ItemStack> process(ServerLevel level, ItemStack stack, FanProcessingType type) {
-        return switch (type) {
-            case NONE -> List.of();
-            case SMOKING -> fanRecipe(level, EFRecipes.SMOKING_TYPE.get(), stack)
-                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
-                    .orElseGet(() -> cookingRecipe(level, RecipeType.SMOKING, stack).map(recipe -> cook(recipe, stack)).orElse(List.of()));
-            case BLASTING -> fanRecipe(level, EFRecipes.BLASTING_TYPE.get(), stack)
-                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
-                    .orElseGet(() -> blastingRecipe(level, stack).map(recipe -> cook(recipe, stack)).orElse(List.of()));
-            case WASHING -> fanRecipe(level, EFRecipes.WASHING_TYPE.get(), stack)
-                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
-                    .orElseGet(() -> List.of(copperStage(stack, false)));
-            case HAUNTING -> fanRecipe(level, EFRecipes.HAUNTING_TYPE.get(), stack)
-                    .map(recipe -> recipe.rollResults(stack.getCount(), level.getRandom()))
-                    .orElseGet(() -> List.of(copperStage(stack, true)));
-        };
-    }
-
-    private static <T extends AbstractCookingRecipe> Optional<T> cookingRecipe(ServerLevel level, RecipeType<T> type, ItemStack stack) {
+    private static <T extends AbstractCookingRecipe> Optional<T> vanillaRecipe(ServerLevel level, RecipeType<T> type, ItemStack stack) {
         return level.recipeAccess().getRecipeFor(type, new SingleRecipeInput(stack), level).map(RecipeHolder::value);
     }
 
@@ -122,8 +136,8 @@ public final class FanProcessing {
         if (isBlastingExcluded(stack)) {
             return Optional.empty();
         }
-        Optional<? extends AbstractCookingRecipe> blasting = cookingRecipe(level, RecipeType.BLASTING, stack);
-        return blasting.isPresent() ? blasting : cookingRecipe(level, RecipeType.SMELTING, stack);
+        Optional<? extends AbstractCookingRecipe> blasting = vanillaRecipe(level, RecipeType.BLASTING, stack);
+        return blasting.isPresent() ? blasting : vanillaRecipe(level, RecipeType.SMELTING, stack);
     }
 
     private static boolean isBlastingExcluded(ItemStack stack) {
@@ -131,10 +145,6 @@ public final class FanProcessing {
             return false;
         }
         return stack.is(EFTags.Items.BLASTING_EXCLUDE) || SMOKABLE.contains(stack.getItem());
-    }
-
-    private static <T extends FanProcessingRecipe> Optional<T> fanRecipe(ServerLevel level, RecipeType<T> type, ItemStack stack) {
-        return level.recipeAccess().getRecipeFor(type, new SingleRecipeInput(stack), level).map(RecipeHolder::value);
     }
 
     private static List<ItemStack> cook(AbstractCookingRecipe recipe, ItemStack stack) {
@@ -149,12 +159,11 @@ public final class FanProcessing {
         return results;
     }
 
-    private static ItemStack copperStage(ItemStack stack, boolean oxidize) {
-        if (!(stack.getItem() instanceof BlockItem blockItem)) {
+    private static ItemStack copperStage(ItemStack stack, ProcessingType type) {
+        if (type.copperTransform().isEmpty() || !(stack.getItem() instanceof BlockItem blockItem)) {
             return ItemStack.EMPTY;
         }
-        Block block = blockItem.getBlock();
-        Block next = oxidize ? DataMapHooks.getNextOxidizedStage(block) : DataMapHooks.getPreviousOxidizedStage(block);
+        Block next = type.copperTransform().get().apply(blockItem.getBlock());
         if (next == null || next.asItem() == Items.AIR) {
             return ItemStack.EMPTY;
         }
@@ -167,8 +176,12 @@ public final class FanProcessing {
             return;
         }
         cachedRecipes = recipes;
+        RECIPES.clear();
         PROCESSABLE.clear();
         SMOKABLE.clear();
+        for (RecipeHolder<FanProcessingRecipe> holder : recipes.recipeMap().byType(EFRecipes.FAN_PROCESSING_TYPE.get())) {
+            RECIPES.computeIfAbsent(holder.value().processingType(), key -> new ArrayList<>()).add(holder.value());
+        }
         for (RecipeHolder<?> holder : recipes.recipeMap().byType(RecipeType.SMOKING)) {
             if (holder.value() instanceof AbstractCookingRecipe recipe) {
                 recipe.input().items().forEach(item -> SMOKABLE.add(item.value()));

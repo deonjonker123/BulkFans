@@ -4,8 +4,10 @@ import com.misterd.encasedfans.attachment.EFAttachments;
 import com.misterd.encasedfans.block.EFBlocks;
 import com.misterd.encasedfans.blockentity.EFBlockEntities;
 import com.misterd.encasedfans.config.EFConfig;
+import com.misterd.encasedfans.datamap.EFDataMaps;
 import com.misterd.encasedfans.item.EFCreativeTab;
 import com.misterd.encasedfans.item.EFItems;
+import com.misterd.encasedfans.processing.EFProcessingTypes;
 import com.misterd.encasedfans.recipe.EFRecipes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -23,6 +25,8 @@ public class EncasedFans {
         EFCreativeTab.register(modEventBus);
         EFRecipes.register(modEventBus);
         EFAttachments.register(modEventBus);
+        modEventBus.addListener(EFProcessingTypes::registerRegistry);
+        modEventBus.addListener(EFDataMaps::registerDataMaps);
 
         modContainer.registerConfig(ModConfig.Type.SERVER, EFConfig.SERVER_SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, EFConfig.CLIENT_SPEC);

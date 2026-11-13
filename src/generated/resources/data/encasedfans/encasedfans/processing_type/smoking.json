@@ -1,0 +1,7 @@
+{
+  "ignite_entities": true,
+  "particle": {
+    "type": "minecraft:smoke"
+  },
+  "vanilla_recipes": "smoking"
+}

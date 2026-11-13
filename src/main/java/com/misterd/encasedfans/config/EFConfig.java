@@ -31,7 +31,7 @@ public class EFConfig {
         public final ModConfigSpec.DoubleValue pushFalloff;
 
         public final ModConfigSpec.IntValue igniteTicks;
-        public final ModConfigSpec.IntValue darknessTicks;
+        public final ModConfigSpec.IntValue effectTicks;
 
         Server(ModConfigSpec.Builder builder) {
             builder.push("processing");
@@ -69,11 +69,11 @@ public class EFConfig {
 
             builder.push("effects");
             igniteTicks = builder
-                    .comment("Ticks entities stay on fire after airflow from fire, campfires or lava.")
+                    .comment("Ticks entities stay on fire after airflow from a processing type that ignites them.")
                     .defineInRange("igniteTicks", 120, 0, 6000);
-            darknessTicks = builder
-                    .comment("Ticks of Darkness given to entities in airflow from soul fire or soul campfires.")
-                    .defineInRange("darknessTicks", 60, 0, 6000);
+            effectTicks = builder
+                    .comment("Ticks of status effects given to entities in the airflow, for processing types that don't set their own duration.")
+                    .defineInRange("effectTicks", 60, 1, 6000);
             builder.pop();
         }
     }

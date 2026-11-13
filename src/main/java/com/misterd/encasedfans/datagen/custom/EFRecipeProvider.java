@@ -2,9 +2,10 @@ package com.misterd.encasedfans.datagen.custom;
 
 import com.misterd.encasedfans.EncasedFans;
 import com.misterd.encasedfans.block.EFBlocks;
-import com.misterd.encasedfans.recipe.custom.HauntingRecipe;
+import com.misterd.encasedfans.processing.EFProcessingTypes;
+import com.misterd.encasedfans.processing.ProcessingType;
+import com.misterd.encasedfans.recipe.custom.FanProcessingRecipe;
 import com.misterd.encasedfans.recipe.custom.ProcessingOutput;
-import com.misterd.encasedfans.recipe.custom.WashingRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -33,31 +34,30 @@ public class EFRecipeProvider extends RecipeProvider {
                 .pattern("IBI")
                 .pattern("BRB")
                 .pattern("IBI")
-                .define('I', Items.IRON_INGOT)
+                .define('I', Items.COPPER_BLOCK)
                 .define('B', Items.IRON_BARS)
                 .define('R', Items.REDSTONE)
                 .unlockedBy(getHasName(Items.REDSTONE), has(Items.REDSTONE))
                 .save(output);
 
-        washing("gravel", Items.GRAVEL, output(Items.FLINT, 1F), output(Items.IRON_NUGGET, 0.1F));
-        washing("sand", Items.SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
-        washing("soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F), output(Items.QUARTZ, 0.1F));
+        fan(EFProcessingTypes.WASHING, "gravel", Items.GRAVEL, output(Items.FLINT, 1F), output(Items.IRON_NUGGET, 0.1F));
+        fan(EFProcessingTypes.WASHING, "sand", Items.SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
+        fan(EFProcessingTypes.WASHING, "red_sand", Items.RED_SAND, output(Items.CLAY_BALL, 1F), output(Items.GOLD_NUGGET, 0.1F));
+        fan(EFProcessingTypes.WASHING, "soul_sand", Items.SOUL_SAND, output(Items.SAND, 1F), output(Items.QUARTZ, 0.05F));
+        fan(EFProcessingTypes.WASHING, "soul_soil", Items.SOUL_SOIL, output(Items.RED_SAND, 1F));
 
-        haunting("sand", Items.SAND, output(Items.SOUL_SAND, 1F));
-        haunting("potato", Items.POTATO, output(Items.POISONOUS_POTATO, 1F));
-        haunting("torch", Items.TORCH, output(Items.SOUL_TORCH, 1F));
-        haunting("lantern", Items.LANTERN, output(Items.SOUL_LANTERN, 1F));
-        haunting("campfire", Items.CAMPFIRE, output(Items.SOUL_CAMPFIRE, 1F));
+        fan(EFProcessingTypes.HAUNTING, "sand", Items.SAND, output(Items.SOUL_SAND, 1F));
+        fan(EFProcessingTypes.HAUNTING, "red_sand", Items.RED_SAND, output(Items.SOUL_SOIL, 1F));
+        fan(EFProcessingTypes.HAUNTING, "potato", Items.POTATO, output(Items.POISONOUS_POTATO, 1F));
+        fan(EFProcessingTypes.HAUNTING, "torch", Items.TORCH, output(Items.SOUL_TORCH, 1F));
+        fan(EFProcessingTypes.HAUNTING, "lantern", Items.LANTERN, output(Items.SOUL_LANTERN, 1F));
+        fan(EFProcessingTypes.HAUNTING, "campfire", Items.CAMPFIRE, output(Items.SOUL_CAMPFIRE, 1F));
     }
 
-    private void washing(String name, ItemLike input, ProcessingOutput... results) {
-        output.accept(recipeKey("washing/" + name), new WashingRecipe(Ingredient.of(input), List.of(results)), null);
+    private void fan(ResourceKey<ProcessingType> type, String name, ItemLike input, ProcessingOutput... results) {
+        String path = type.identifier().getPath() + "/" + name;
+        output.accept(recipeKey(path), new FanProcessingRecipe(type, Ingredient.of(input), List.of(results)), null);
     }
-
-    private void haunting(String name, ItemLike input, ProcessingOutput... results) {
-        output.accept(recipeKey("haunting/" + name), new HauntingRecipe(Ingredient.of(input), List.of(results)), null);
-    }
-
 
     private static ProcessingOutput output(ItemLike item, float chance) {
         return new ProcessingOutput(new ItemStackTemplate(item.asItem()), chance);

@@ -1,0 +1,22 @@
+{
+  "values": {
+    "minecraft:campfire": {
+      "processing_type": "encasedfans:smoking",
+      "state": {
+        "lit": "true"
+      }
+    },
+    "minecraft:fire": {
+      "processing_type": "encasedfans:smoking"
+    },
+    "minecraft:soul_campfire": {
+      "processing_type": "encasedfans:haunting",
+      "state": {
+        "lit": "true"
+      }
+    },
+    "minecraft:soul_fire": {
+      "processing_type": "encasedfans:haunting"
+    }
+  }
+}

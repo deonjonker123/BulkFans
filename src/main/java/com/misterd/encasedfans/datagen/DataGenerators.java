@@ -2,8 +2,11 @@ package com.misterd.encasedfans.datagen;
 
 import com.misterd.encasedfans.EncasedFans;
 import com.misterd.encasedfans.datagen.custom.EFBlockTagsProvider;
+import com.misterd.encasedfans.datagen.custom.EFDataMapProvider;
 import com.misterd.encasedfans.datagen.custom.EFLootTableProvider;
 import com.misterd.encasedfans.datagen.custom.EFRecipeProvider;
+import com.misterd.encasedfans.processing.EFProcessingTypes;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,5 +25,8 @@ public class DataGenerators {
                 lookupProvider));
         event.createProvider(EFBlockTagsProvider::new);
         event.createProvider(EFRecipeProvider.Runner::new);
+        event.createProvider(EFDataMapProvider::new);
+        event.createDatapackRegistryObjects(new RegistrySetBuilder()
+                .add(EFProcessingTypes.REGISTRY, EFProcessingTypes::bootstrap));
     }
 }

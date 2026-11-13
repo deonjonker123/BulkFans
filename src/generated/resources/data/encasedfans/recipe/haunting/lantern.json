@@ -1,6 +1,7 @@
 {
-  "type": "encasedfans:haunting",
+  "type": "encasedfans:fan_processing",
   "ingredient": "minecraft:lantern",
+  "processing_type": "encasedfans:haunting",
   "results": [
     {
       "id": "minecraft:soul_lantern"

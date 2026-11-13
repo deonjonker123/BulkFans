@@ -1,0 +1,7 @@
+{
+  "copper_transform": "deoxidize",
+  "extinguish_entities": true,
+  "particle": {
+    "type": "minecraft:splash"
+  }
+}
